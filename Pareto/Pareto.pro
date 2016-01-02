@@ -15,12 +15,14 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     Solutions.cpp \
-    qcustomplot.cpp
+    qcustomplot.cpp \
+    qcp_hover.cpp
 
 HEADERS  += mainwindow.h \
     Solutions.h \
     debug_stream.h \
     qcustomplot.h \
-    Point.h
+    Point.h \
+    qcp_hover.h
 
 FORMS    += mainwindow.ui

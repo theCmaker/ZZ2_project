@@ -43,6 +43,7 @@ void MainWindow::on_actionOpen_triggered()
 void MainWindow::load_file(QString f_nom) {
     /*QGraphicsScene *scene = new QGraphicsScene;*/
     s = new Solutions(f_nom.toStdString().c_str());
+    ui->Graphique->setSolution(s);
     /*const QBrush dots(Qt::darkRed);*/
 
     //View values

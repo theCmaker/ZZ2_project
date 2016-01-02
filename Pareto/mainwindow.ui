@@ -62,7 +62,7 @@
             <enum>QFrame::Raised</enum>
            </property>
           </widget>
-          <widget class="QCustomPlot" name="Graphique" native="true">
+          <widget class="QCPHover" name="Graphique" native="true">
            <property name="minimumSize">
             <size>
              <width>500</width>
@@ -211,9 +211,9 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QCustomPlot</class>
+   <class>QCPHover</class>
    <extends>QWidget</extends>
-   <header>qcustomplot.h</header>
+   <header>qcp_hover.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

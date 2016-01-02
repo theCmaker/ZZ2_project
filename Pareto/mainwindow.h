@@ -5,7 +5,7 @@
 #include <QFileDialog>
 #include <iostream>
 #include "Solutions.h"
-#include "qcustomplot.h"
+#include "qcp_hover.h"
 #include <QtWidgets/QTextEdit>
 
 namespace Ui {
