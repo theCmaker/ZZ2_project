@@ -86,6 +86,19 @@ std::vector<FPoints> Solutions::getPFrontiers() const {
     return pFrontiers_;
 }
 
+FPointv * Solutions::findPointsInArea(FPoint &top_left, FPoint &bottom_right) const
+{
+    FPointv * in_area = new FPointv;
+    for(FPointv::const_iterator i = pts_.begin(); i != pts_.end(); ++i) {
+        //std::cout << "test with " << *i << "in rectangle " << top_left << "--" << bottom_right << std::endl;
+        if (i->isIn(top_left,bottom_right)) {
+            in_area->push_back(*i);
+            //std::cout << *i << " is in area" << std::endl;
+        }
+    }
+    return in_area;
+}
+
 void Solutions::compute_frontiers() {
     std::map<float,std::map<float,FPoint> > pts;
     std::map<float,std::map<float,FPoint> >::iterator xitr;

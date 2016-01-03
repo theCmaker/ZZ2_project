@@ -97,7 +97,7 @@ void MainWindow::load_file(QString f_nom) {
         ui->Graphique->graph(i)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, f_color, f_color, 10));
         ui->Graphique->graph(i)->setLineStyle(QCPGraph::lsLine);
         ui->Graphique->graph(i)->setPen(QPen(f_color));
-        f_color = f_color.lighter(125);
+        f_color = f_color.lighter(130);
     }
 
 

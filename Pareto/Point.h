@@ -1,6 +1,8 @@
 #ifndef POINT_H
 #define POINT_H
 
+#include <string>
+
 template<typename T>
 class Point {
 private:
@@ -23,9 +25,15 @@ public:
     void setX (T);
     void setY (T);
 
+    //interrogators
+    bool isIn (Point<T> &,Point<T> &) const;
+
     //comparators
-    bool dominates (Point<T>);
+    bool dominates (Point<T> &);
     bool operator< (const Point<T> &) const;
+
+    //transformers
+    std::string toString() const;
 
 };
 
@@ -68,7 +76,6 @@ T Point<T>::getY () const {
 }
 
 //setters
-
 template <typename T>
 void Point<T>::setX (T x) {
     x_ = x;
@@ -79,15 +86,29 @@ void Point<T>::setY (T y) {
     y_ = y;
 }
 
+//interrogators
+template <typename T>
+bool Point<T>::isIn (Point<T> & top_left, Point<T> & bottom_right) const {
+    return (this->x_ >= top_left.x_) && (this->x_ <= bottom_right.x_) && (this->y_ <= top_left.y_) && (this->y_ >= bottom_right.y_);
+}
+
 //comparators
 template <typename T>
-bool Point<T>::dominates (Point<T> p) {
+bool Point<T>::dominates (Point<T> &p) {
     return (this->x_ >= p.x_ && this->y_ <= p.y_);
 }
 
 template <typename T>
 bool Point<T>::operator< (const Point<T> &p) const {
     return this->x_ < p.x_ && this->y_ >= p.y_;
+}
+
+//transformers
+template <typename T>
+std::string Point<T>::toString () const {
+    char buf[128];
+    sprintf(&buf[0],"(%f,%f)",(float) x_, (float) y_);
+    return std::string(buf);
 }
 
 

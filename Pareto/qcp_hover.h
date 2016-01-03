@@ -3,6 +3,7 @@
 
 #include "qcustomplot.h"
 #include "Solutions.h"
+#include "Point.h"
 
 class QCPHover : public QCustomPlot
 {
@@ -18,8 +19,8 @@ public:
     Solutions * getSolution() const;
 
 private:
-    QPoint cursor_pos;
-    Solutions *sln;
+    QPoint cursor_pos_;
+    Solutions *sln_;
 };
 
 #endif // QCP_HOVER_H

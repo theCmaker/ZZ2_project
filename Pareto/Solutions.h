@@ -50,6 +50,7 @@ class Solutions
 
     FPointv getPts() const;
     std::vector<FPoints> getPFrontiers() const;
+    FPointv * findPointsInArea(FPoint &, FPoint &) const;
     void compute_frontiers();
 };
 
