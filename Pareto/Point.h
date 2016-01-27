@@ -8,22 +8,24 @@ class Point {
 private:
     T x_;
     T y_;
-    unsigned id_;
-
-    static unsigned cpt_;
+    unsigned    id_;
+    std::string info_;
 
 public:
-    Point (T=0, T=0);
+    Point (unsigned=0, T=0, T=0, std::string="");
     Point (const Point<T> &);
     ~Point ();
 
     //getters
-    T getX () const;
-    T getY () const;
+    T           getX    () const;
+    T           getY    () const;
+    unsigned    getId   () const;
+    std::string getInfo () const;
 
     //setters
-    void setX (T);
-    void setY (T);
+    void setX       (T);
+    void setY       (T);
+    void setInfo    (std::string);
 
     //interrogators
     bool isIn (Point<T> &,Point<T> &) const;
@@ -40,31 +42,34 @@ public:
 //display
 template <typename T>
 std::ostream & operator<< (std::ostream & o, const Point<T> &p) {
-    o << '(' << p.getX() << ',' << p.getY() << ')';
+    o << '(' << p.getX() << ',' << p.getY() << ") " << p.getInfo();
     return o;
 }
 
+//Constructors
 template <typename T>
-Point<T>::Point (T x, T y) :
+Point<T>::Point (unsigned id, T x, T y, std::string s) :
     x_(x),
-    y_(y)
+    y_(y),
+    id_(id),
+    info_(s)
 {
-    id_ = cpt_++;
 }
 
 template <typename T>
 Point<T>::Point (const Point<T> &p) :
     x_(p.x_),
-    y_(p.y_)
+    y_(p.y_),
+    id_(p.id_),
+    info_(p.info_)
 {
-    id_ = cpt_++;
 }
 
+//Destructor
 template <typename T>
 Point<T>::~Point () {}
 
 //getters
-
 template <typename T>
 T Point<T>::getX () const {
     return x_;
@@ -73,6 +78,16 @@ T Point<T>::getX () const {
 template <typename T>
 T Point<T>::getY () const {
     return y_;
+}
+
+template <typename T>
+unsigned Point<T>::getId() const {
+    return id_;
+}
+
+template <typename T>
+std::string Point<T>::getInfo() const {
+    return info_;
 }
 
 //setters
@@ -84,6 +99,11 @@ void Point<T>::setX (T x) {
 template <typename T>
 void Point<T>::setY (T y) {
     y_ = y;
+}
+
+template <typename T>
+void Point<T>::setInfo(std::string info) {
+    info_ = info;
 }
 
 //interrogators
@@ -107,7 +127,7 @@ bool Point<T>::operator< (const Point<T> &p) const {
 template <typename T>
 std::string Point<T>::toString () const {
     char buf[128];
-    sprintf(&buf[0],"(%f,%f)",(float) x_, (float) y_);
+    sprintf(&buf[0],"(%f,%f) %s",(float) x_, (float) y_, info_.c_str());
     return std::string(buf);
 }
 

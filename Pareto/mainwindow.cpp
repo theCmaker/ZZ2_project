@@ -76,28 +76,28 @@ void MainWindow::load_file(QString f_nom) {
 
     // Pareto Frontier
     QColor f_color = Qt::darkRed;
-    //f_color = f_color.darker(150);
     s->compute_frontiers();
     std::cout << "Pareto frontier" << std::endl;
-    std::vector<FPoints> pareto = s->getPFrontiers();
+    ParetoFrontv pareto = s->getPFrontiers();
+    int factor;
     /*for (FPoints::iterator i = pareto.begin(); i != pareto.end(); ++i) {
         std::cout << *i << std::endl;
     }*/
 
     QVector<QVector<double> > pareto_x(pareto.size()), pareto_y(pareto.size());
     for (unsigned i = 0; i < pareto.size(); ++i) {
-        for (FPoints::iterator pitr = pareto[i].begin(); pitr != pareto[i].end(); ++pitr) {
-            pareto_x[i].append(pitr->getX());
-            pareto_y[i].append(pitr->getY());
+        for (ParetoFront::iterator pitr = pareto[i].begin(); pitr != pareto[i].end(); ++pitr) {
+            pareto_x[i].append((*pitr)->getX());
+            pareto_y[i].append((*pitr)->getY());
         }
     }
     for (unsigned i = 0; i < pareto.size(); ++i) {
+        factor = (225 * i)/pareto.size() + 100;
         ui->Graphique->addGraph();
         ui->Graphique->graph(i)->setData(pareto_x[i],pareto_y[i]);
-        ui->Graphique->graph(i)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, f_color, f_color, 10));
+        ui->Graphique->graph(i)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, f_color.lighter(factor), f_color.lighter(factor), 10));
         ui->Graphique->graph(i)->setLineStyle(QCPGraph::lsLine);
-        ui->Graphique->graph(i)->setPen(QPen(f_color));
-        f_color = f_color.lighter(130);
+        ui->Graphique->graph(i)->setPen(QPen(f_color.lighter(factor)));
     }
 
 

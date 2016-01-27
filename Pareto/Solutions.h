@@ -16,16 +16,20 @@
 //typedef bg::model::point<float, 2, bg::cs::cartesian> Point;
 
 typedef Point<float> FPoint;
-template <typename T>
-unsigned Point<T>::cpt_ = 0;
 typedef std::vector<FPoint> FPointv;
+typedef std::vector<FPoint *> FPointPtrv;
 typedef std::set<FPoint> FPoints;
+typedef std::set<FPoint *> FPointPtrS;
+typedef std::map<float,FPoint *> FPointPtrMap;
+typedef std::map<float,FPointPtrMap > FPointPtrMMap;
+typedef std::set<FPoint *> ParetoFront;
+typedef std::vector<ParetoFront> ParetoFrontv;
 
 class Solutions
 {
   protected:
     FPointv                 pts_;
-    int                     nb_pts_;
+    unsigned                nb_pts_;
     float                   x_min_;
     float                   x_max_;
     float                   y_min_;
@@ -34,7 +38,8 @@ class Solutions
     std::string             abscissa_;
     std::string             ordinate_;
     std::string             filename_;
-    std::vector<FPoints>    pFrontiers_;
+    ParetoFrontv            pFrontiers_;
+    FPointPtrMMap           pts_map_;
   public:
     Solutions();
     Solutions(const char *);
@@ -48,10 +53,11 @@ class Solutions
     std::string getOrdinate() const;
     std::string getFilename() const;
 
-    FPointv getPts() const;
-    std::vector<FPoints> getPFrontiers() const;
-    FPointv * findPointsInArea(FPoint &, FPoint &) const;
-    void compute_frontiers();
+    FPointv         getPts              ()                      const;
+    FPointPtrMMap   getPtsMap           ()                      const;
+    ParetoFrontv    getPFrontiers       ()                      const;
+    FPointPtrv      *findPointsInArea   (FPoint &, FPoint &)    const;
+    void            compute_frontiers   ();
 };
 
 #endif /* end of include guard: __SOLUTIONS_H__ */

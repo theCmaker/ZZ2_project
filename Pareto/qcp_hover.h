@@ -20,6 +20,7 @@ public:
 
 private:
     QPoint cursor_pos_;
+    QPoint old_cursor_pos_;
     Solutions *sln_;
 };
 
