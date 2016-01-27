@@ -115,7 +115,7 @@ bool Point<T>::isIn (Point<T> & top_left, Point<T> & bottom_right) const {
 //comparators
 template <typename T>
 bool Point<T>::dominates (Point<T> &p) {
-    return (this->x_ >= p.x_ && this->y_ <= p.y_);
+    return (this->x_ > p.x_ && this->y_ < p.y_);
 }
 
 template <typename T>

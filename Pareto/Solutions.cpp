@@ -39,11 +39,10 @@ Solutions::Solutions(const char *name) :
     std::cout << "File: " << filename_ << std::endl;
     std::cout << nb_pts_ << " points" << std::endl;
     std::cout << "Axis 1: " << abscissa_ << std::endl << "Axis 2: " << ordinate_ << std::endl;
-    int j = 0;
-    for (std::vector<FPoint>::iterator i = pts_.begin(); i != pts_.end(); ++i,++j)
+    /*for (std::vector<FPoint>::iterator i = pts_.begin(); i != pts_.end(); ++i)
     {
         std::cout << *i << std::endl;
-    }
+    }*/
 }
 
 Solutions::~Solutions() {
@@ -114,23 +113,20 @@ FPointPtrv * Solutions::findPointsInArea(FPoint &top_left, FPoint &bottom_right)
             }
         }
     }
-    /*
+
     //Ancienne version
-    for(FPointv::const_iterator i = pts_.begin(); i != pts_.end(); ++i) {
+    /*for(FPointv::const_iterator i = pts_.begin(); i != pts_.end(); ++i) {
         //std::cout << "test with " << *i << "in rectangle " << top_left << "--" << bottom_right << std::endl;
         if (i->isIn(top_left,bottom_right)) {
             in_area->push_back(new FPoint(*i));
-            std::cout << *i << " is in area" << std::endl;
+            //std::cout << *i << " is in area" << std::endl;
         }
-    }
-    */
+    }*/
+
     return in_area;
 }
 
 void Solutions::compute_frontiers() {
-    /*std::map<float,std::map<float,FPoint> > pts;
-    std::map<float,std::map<float,FPoint> >::iterator xitr;
-    */
     std::cout << "Compute frontiers" << std::endl;
     //Nvelle version plus efficace
     FPointPtrMMap::iterator x_itr;
@@ -144,72 +140,36 @@ void Solutions::compute_frontiers() {
             pts_map_.insert(std::pair<float,std::map<float,FPoint *> >(i->getX(),ymap)); //insertion de la sous-map
         }
     }
-    /*
-    //Ancienne version
-    for (FPointv::iterator i = pts_.begin(); i != pts_.end(); ++i) {
-        xitr = pts.find(i->getX()); // recherche abscisse
-        if (xitr != pts.end()) { // x existant
-            //std::cout << i->getX() << " présent dans la map, ajout de " << *i << std::endl;
-            xitr->second.insert(std::pair<float,FPoint>(i->getY(),*i)); // ajout de la valeur dans la sous-map
-        } else { // x non existant
-            //std::cout << i->getX() << " absent de la map, ajout de " << *i << std::endl;
-            std::map<float,FPoint> ymap; // sous map
-            ymap.insert(std::pair<float,FPoint>(i->getY(),*i)); // ajout de la valeur
-            pts.insert(std::pair<float,std::map<float,FPoint> >(i->getX(),ymap)); // ajout de la sous map
-        }
-    }
-    */
-
     //Nvelle version
     FPointPtrMMap pts_map_copy(pts_map_);
-    std::pair<FPointPtrS::iterator,bool> res;
+    std::pair<ParetoFront::iterator,bool> res;
+    int i = 0;
     while (!pts_map_copy.empty()) {
-        pFrontiers_.push_back(FPointPtrS()); //Ajout d'un front vide
-        pFrontiers_.back().insert(pts_map_copy.begin()->second.begin()->second);
-        FPoint *first = *(--pFrontiers_.back().end());
+        ++i;
+        pFrontiers_.push_back(ParetoFront()); //Ajout d'un front vide
+        pFrontiers_.back().push_back(pts_map_copy.begin()->second.begin()->second);
+        FPoint *first = pFrontiers_.back().front();
         pts_map_copy.begin()->second.erase(first->getY());
         if (pts_map_copy.begin()->second.empty()) {
             pts_map_copy.erase(first->getX());
         }
         if (!pts_map_copy.empty()) {
-            for (x_itr = pts_map_copy.begin(); x_itr != pts_map_copy.end(); ++x_itr) {
+            x_itr = pts_map_copy.begin();
+            while (x_itr != pts_map_copy.end()) {
                 if (x_itr->second.begin()->second->dominates(*first)) {
-                    res = pFrontiers_.back().insert(x_itr->second.begin()->second);
-                    first = *(res.first);
+                    pFrontiers_.back().push_back(x_itr->second.begin()->second);
+                    first = x_itr->second.begin()->second;
                     x_itr->second.erase(first->getY());
                     if (x_itr->second.empty()) {
-                        pts_map_copy.erase(x_itr);
+                        x_itr = pts_map_copy.erase(x_itr);
+                    } else {
+                        ++x_itr;
                     }
+                } else {
+                    ++x_itr;
                 }
             }
         }
     }
-    /*
-    //Ancienne version
-    std::pair<FPoints::iterator,bool> ret;
-    while (!pts.empty()) {
-        pFrontiers_.push_back(FPoints());
-        pFrontiers_.back().insert(pts.begin()->second.begin()->second);
-        //TODO: penser à utiliser le retour de insert.
-        FPoint first = *(--(pFrontiers_.back().end()));
-        pts.begin()->second.erase(first.getY());
-        if (pts.begin()->second.empty()) {
-            pts.erase(first.getX());
-        }
-        if (!pts.empty()) {
-            for (xitr = pts.begin(); xitr != pts.end(); ++xitr) {
-                if (xitr->second.begin()->second.dominates(first)) {
-                    //std::cout << xitr->second.begin()->second << " dominates " << first << "... Add it to the frontier" << std::endl;
-                    ret = pFrontiers_.back().insert(xitr->second.begin()->second);
-                    first = *(ret.first);
-                    xitr->second.erase(ret.first->getY());
-                    //TODO: vérif valgrind
-                    if (xitr->second.empty()) {
-                        pts.erase(xitr);
-                    }
-                }
-            }
-        }
-    }
-    */
+    std::cout << "Computed " << pFrontiers_.size() << " frontiers." << std::endl;
 }

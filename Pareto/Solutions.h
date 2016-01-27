@@ -22,7 +22,7 @@ typedef std::set<FPoint> FPoints;
 typedef std::set<FPoint *> FPointPtrS;
 typedef std::map<float,FPoint *> FPointPtrMap;
 typedef std::map<float,FPointPtrMap > FPointPtrMMap;
-typedef std::set<FPoint *> ParetoFront;
+typedef std::vector<FPoint *> ParetoFront;
 typedef std::vector<ParetoFront> ParetoFrontv;
 
 class Solutions

@@ -53,20 +53,20 @@ void MainWindow::load_file(QString f_nom) {
 
 
     //Points
-    std::vector<FPoint> v = s->getPts();
+    /*std::vector<FPoint> v = s->getPts();
     QVector<double> x(v.size()), y(v.size());
     int j = 0;
-    for (FPointv::iterator i = v.begin(); i != v.end(); ++i) {
+    for (FPointv::iterator i = v.begin(); i != v.end(); ++i) {*/
         /*scene->addEllipse(i->getX()*unit_width - point_size/2.,
                           -(i->getY()*unit_height + point_size/2.),
                           point_size/1,
                           point_size/1,
                           QPen(),
                           dots);*/
-        x[j] = i->getX();
+        /*x[j] = i->getX();
         y[j] = i->getY();
         ++j;
-    }
+    }*/
     /*
     ui->Graphique->addGraph();
     ui->Graphique->graph(0)->setData(x,y);
@@ -80,9 +80,6 @@ void MainWindow::load_file(QString f_nom) {
     std::cout << "Pareto frontier" << std::endl;
     ParetoFrontv pareto = s->getPFrontiers();
     int factor;
-    /*for (FPoints::iterator i = pareto.begin(); i != pareto.end(); ++i) {
-        std::cout << *i << std::endl;
-    }*/
 
     QVector<QVector<double> > pareto_x(pareto.size()), pareto_y(pareto.size());
     for (unsigned i = 0; i < pareto.size(); ++i) {
@@ -100,20 +97,10 @@ void MainWindow::load_file(QString f_nom) {
         ui->Graphique->graph(i)->setPen(QPen(f_color.lighter(factor)));
     }
 
-
     // set axes
     ui->Graphique->xAxis->setLabel(s->getAbscissa().c_str());
     ui->Graphique->yAxis->setLabel(s->getOrdinate().c_str());
     ui->Graphique->xAxis->setRange(s->getMinX()-.05*(s->getMaxX()-s->getMinX()), s->getMaxX()+.05*(s->getMaxX()-s->getMinX()));
     ui->Graphique->yAxis->setRange(s->getMinY()-.05*(s->getMaxY()-s->getMinY()), s->getMaxY()+.05*(s->getMaxY()-s->getMinY()));
     ui->Graphique->replot();
-
-    //Bounding box
-    /*
-    scene->addRect(s->getMinX()*unit_width,
-                   -s->getMaxY()*unit_height,
-                   (s->getMaxX() - s->getMinX())*unit_width,
-                   (s->getMaxY() - s->getMinY())*unit_height);
-    ui->Vue->setScene(scene);
-    */
 }
