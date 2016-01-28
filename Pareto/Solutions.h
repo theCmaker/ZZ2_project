@@ -58,6 +58,7 @@ class Solutions
     const ParetoFrontv  &  getPFrontiers       ()                      const;
           FPointPtrv    *  findPointsInArea    (FPoint &, FPoint &)    const;
           void             compute_frontiers   ();
+          void             saveToFile          (const char *)          const;
 };
 
 #endif /* end of include guard: __SOLUTIONS_H__ */

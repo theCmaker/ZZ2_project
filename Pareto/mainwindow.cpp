@@ -33,12 +33,9 @@ void MainWindow::on_actionOpen_triggered()
 {
     //afficher la dialog de openfile
     QString f_nom=QFileDialog::getOpenFileName(this,tr("Open file"),tr("."),tr("All files (*)"));
-    //Console d'affichage DEBUG
-    QTextEdit *Console = ui->Console;
 
     if(!f_nom.isEmpty())
     {
-        Console->append("Ouverture fichier : ");
         load_file(f_nom);
         ui->actionClose->setDisabled(false);
         ui->actionSave_as->setDisabled(false);
@@ -65,6 +62,20 @@ void MainWindow::on_actionClose_triggered()
         ui->actionSave_as->setDisabled(true);
         ui->actionExport->setDisabled(true);
     }
+}
+
+void MainWindow::on_actionSave_as_triggered()
+{
+    QString f_nom=QFileDialog::getSaveFileName(this,tr("Save as"),tr("."),tr("All files (*)"));
+    if (!f_nom.isEmpty())
+    {
+        s->saveToFile(f_nom.toStdString().c_str());
+    }
+}
+
+void MainWindow::on_actionExport_triggered()
+{
+    QString f_nom=QFileDialog::getSaveFileName(this,tr("Export"),tr("."),tr("TikZ LaTeX (*.tex);;PNG Image (*.png);;JPG Image (*.jpg);;PDF File (*.pdf)"));
 }
 
 void MainWindow::load_file(QString f_nom) {
