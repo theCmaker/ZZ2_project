@@ -28,36 +28,36 @@ typedef std::vector<ParetoFront> ParetoFrontv;
 class Solutions
 {
   protected:
-    FPointv                 pts_;
-    unsigned                nb_pts_;
-    float                   x_min_;
-    float                   x_max_;
-    float                   y_min_;
-    float                   y_max_;
-    std::string            *pts_info_;
-    std::string             abscissa_;
-    std::string             ordinate_;
-    std::string             filename_;
-    ParetoFrontv            pFrontiers_;
-    FPointPtrMMap           pts_map_;
+    FPointv         pts_;
+    FPointPtrMMap   pts_map_;
+    unsigned        nb_pts_;
+    float           x_min_;
+    float           x_max_;
+    float           y_min_;
+    float           y_max_;
+    std::string     abscissa_;
+    std::string     ordinate_;
+    std::string     filename_;
+    ParetoFrontv    pFrontiers_;
+
   public:
     Solutions();
     Solutions(const char *);
     ~Solutions();
 
-    float getMaxX() const;
-    float getMaxY() const;
-    float getMinX() const;
-    float getMinY() const;
-    std::string getAbscissa() const;
-    std::string getOrdinate() const;
-    std::string getFilename() const;
+    const float & getMaxX() const;
+    const float & getMaxY() const;
+    const float & getMinX() const;
+    const float & getMinY() const;
+    const std::string & getAbscissa() const;
+    const std::string & getOrdinate() const;
+    const std::string & getFilename() const;
 
-    FPointv         getPts              ()                      const;
-    FPointPtrMMap   getPtsMap           ()                      const;
-    ParetoFrontv    getPFrontiers       ()                      const;
-    FPointPtrv      *findPointsInArea   (FPoint &, FPoint &)    const;
-    void            compute_frontiers   ();
+    const FPointv       &  getPts              ()                      const;
+    const FPointPtrMMap &  getPtsMap           ()                      const;
+    const ParetoFrontv  &  getPFrontiers       ()                      const;
+          FPointPtrv    *  findPointsInArea    (FPoint &, FPoint &)    const;
+          void             compute_frontiers   ();
 };
 
 #endif /* end of include guard: __SOLUTIONS_H__ */

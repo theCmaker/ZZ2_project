@@ -46,46 +46,45 @@ Solutions::Solutions(const char *name) :
 }
 
 Solutions::~Solutions() {
-	delete [] pts_info_;
 }
 
-float Solutions::getMaxX() const {
+const float & Solutions::getMaxX() const {
     return x_max_;
 }
 
-float Solutions::getMaxY() const {
+const float & Solutions::getMaxY() const {
     return y_max_;
 }
 
-float Solutions::getMinX() const {
+const float & Solutions::getMinX() const {
     return x_min_;
 }
 
-float Solutions::getMinY() const {
+const float & Solutions::getMinY() const {
     return y_min_;
 }
 
-FPointv Solutions::getPts() const {
+const FPointv & Solutions::getPts() const {
     return pts_;
 }
 
-FPointPtrMMap Solutions::getPtsMap() const {
+const FPointPtrMMap & Solutions::getPtsMap() const {
     return pts_map_;
 }
 
-std::string Solutions::getAbscissa() const {
+const std::string & Solutions::getAbscissa() const {
     return abscissa_;
 }
 
-std::string Solutions::getOrdinate() const {
+const std::string & Solutions::getOrdinate() const {
     return ordinate_;
 }
 
-std::string Solutions::getFilename() const {
+const std::string & Solutions::getFilename() const {
     return filename_;
 }
 
-ParetoFrontv Solutions::getPFrontiers() const {
+const ParetoFrontv & Solutions::getPFrontiers() const {
     return pFrontiers_;
 }
 

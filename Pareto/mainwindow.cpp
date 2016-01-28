@@ -5,11 +5,15 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
+    s(nullptr),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     setWindowTitle("Visualisation de Front de Pareto");
     ui->Graphique->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables);
+    ui->actionClose->setDisabled(true);
+    ui->actionSave_as->setDisabled(true);
+    ui->actionExport->setDisabled(true);
 }
 
 MainWindow::~MainWindow()
@@ -27,7 +31,6 @@ QTextEdit* MainWindow::Sortie_application()
 
 void MainWindow::on_actionOpen_triggered()
 {
-
     //afficher la dialog de openfile
     QString f_nom=QFileDialog::getOpenFileName(this,tr("Open file"),tr("."),tr("All files (*)"));
     //Console d'affichage DEBUG
@@ -37,6 +40,30 @@ void MainWindow::on_actionOpen_triggered()
     {
         Console->append("Ouverture fichier : ");
         load_file(f_nom);
+        ui->actionClose->setDisabled(false);
+        ui->actionSave_as->setDisabled(false);
+        ui->actionExport->setDisabled(false);
+    }
+}
+
+void MainWindow::on_actionClose_triggered()
+{
+    if (s != nullptr) {
+        ui->Graphique->xAxis->setLabel(nullptr);
+        ui->Graphique->yAxis->setLabel(nullptr);
+        ui->Graphique->clearGraphs();
+        ui->Graphique->clearItems();
+        ui->Graphique->clearPlottables();
+        ui->Graphique->clearFocus();
+        ui->Graphique->setSolution(nullptr);
+        ui->Graphique->replot();
+
+        ui->Console->clear();
+        delete s;
+        s = nullptr;
+        ui->actionClose->setDisabled(true);
+        ui->actionSave_as->setDisabled(true);
+        ui->actionExport->setDisabled(true);
     }
 }
 

@@ -17,15 +17,15 @@ public:
     ~Point ();
 
     //getters
-    T           getX    () const;
-    T           getY    () const;
-    unsigned    getId   () const;
-    std::string getInfo () const;
+    const T           & getX    () const;
+    const T           & getY    () const;
+    const unsigned    & getId   () const;
+    const std::string & getInfo () const;
 
     //setters
-    void setX       (T);
-    void setY       (T);
-    void setInfo    (std::string);
+    void setX       (T &);
+    void setY       (T &);
+    void setInfo    (std::string &);
 
     //interrogators
     bool isIn (Point<T> &,Point<T> &) const;
@@ -71,38 +71,38 @@ Point<T>::~Point () {}
 
 //getters
 template <typename T>
-T Point<T>::getX () const {
+const T & Point<T>::getX () const {
     return x_;
 }
 
 template <typename T>
-T Point<T>::getY () const {
+const T & Point<T>::getY() const {
     return y_;
 }
 
 template <typename T>
-unsigned Point<T>::getId() const {
+const unsigned & Point<T>::getId() const {
     return id_;
 }
 
 template <typename T>
-std::string Point<T>::getInfo() const {
+const std::string & Point<T>::getInfo() const {
     return info_;
 }
 
 //setters
 template <typename T>
-void Point<T>::setX (T x) {
+void Point<T>::setX (T & x) {
     x_ = x;
 }
 
 template <typename T>
-void Point<T>::setY (T y) {
+void Point<T>::setY (T & y) {
     y_ = y;
 }
 
 template <typename T>
-void Point<T>::setInfo(std::string info) {
+void Point<T>::setInfo(std::string & info) {
     info_ = info;
 }
 
