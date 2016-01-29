@@ -121,16 +121,26 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>30</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
      <string>File</string>
     </property>
+    <widget class="QMenu" name="menuExport">
+     <property name="title">
+      <string>Export</string>
+     </property>
+     <addaction name="actionTikZ_for_LaTeX"/>
+     <addaction name="actionPNG_Image"/>
+     <addaction name="actionJPG_Image"/>
+     <addaction name="actionPDF_File"/>
+     <addaction name="actionGNUPlot"/>
+    </widget>
     <addaction name="actionOpen"/>
     <addaction name="actionSave_as"/>
-    <addaction name="actionExport"/>
+    <addaction name="menuExport"/>
     <addaction name="separator"/>
     <addaction name="actionClose"/>
     <addaction name="actionQuit"/>
@@ -144,6 +154,9 @@
     <property name="title">
      <string>View</string>
     </property>
+    <addaction name="actionGrid"/>
+    <addaction name="actionAxes"/>
+    <addaction name="actionLabels"/>
    </widget>
    <widget class="QMenu" name="menuAbout">
     <property name="title">
@@ -191,20 +204,52 @@
     <string>Ctrl+Shift+S</string>
    </property>
   </action>
-  <action name="actionExport">
-   <property name="text">
-    <string>Export</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+E</string>
-   </property>
-  </action>
   <action name="actionQuit">
    <property name="text">
     <string>Quit</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="actionTikZ_for_LaTeX">
+   <property name="text">
+    <string>TikZ for LaTeX</string>
+   </property>
+  </action>
+  <action name="actionPNG_Image">
+   <property name="text">
+    <string>PNG Image</string>
+   </property>
+  </action>
+  <action name="actionJPG_Image">
+   <property name="text">
+    <string>JPG Image</string>
+   </property>
+  </action>
+  <action name="actionPDF_File">
+   <property name="text">
+    <string>PDF File</string>
+   </property>
+  </action>
+  <action name="actionGNUPlot">
+   <property name="text">
+    <string>GNUPlot</string>
+   </property>
+  </action>
+  <action name="actionGrid">
+   <property name="text">
+    <string>Grid</string>
+   </property>
+  </action>
+  <action name="actionAxes">
+   <property name="text">
+    <string>Axes</string>
+   </property>
+  </action>
+  <action name="actionLabels">
+   <property name="text">
+    <string>Axes' Labels</string>
    </property>
   </action>
  </widget>

@@ -9,6 +9,7 @@
 #include <set>
 #include <map>
 #include "Point.h"
+#include "style.h"
 
 //#include <boost/geometry.hpp>
 //#include <boost/geometry/geometries/point.hpp>
@@ -39,6 +40,7 @@ class Solutions
     std::string     ordinate_;
     std::string     filename_;
     ParetoFrontv    pFrontiers_;
+    Style           style_;
 
   public:
     Solutions();
@@ -56,9 +58,11 @@ class Solutions
     const FPointv       &  getPts              ()                      const;
     const FPointPtrMMap &  getPtsMap           ()                      const;
     const ParetoFrontv  &  getPFrontiers       ()                      const;
+          Style         &  getStyle            ();
           FPointPtrv    *  findPointsInArea    (FPoint &, FPoint &)    const;
           void             compute_frontiers   ();
           void             saveToFile          (const char *)          const;
+          void             exportToTikZ        (const char *)          const;
 };
 
 #endif /* end of include guard: __SOLUTIONS_H__ */

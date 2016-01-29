@@ -10,10 +10,10 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     setWindowTitle("Visualisation de Front de Pareto");
-    ui->Graphique->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables);
+    ui->Graphique->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables | QCP::iSelectItems);
     ui->actionClose->setDisabled(true);
     ui->actionSave_as->setDisabled(true);
-    ui->actionExport->setDisabled(true);
+    ui->actionTikZ_for_LaTeX->setDisabled(true);
 }
 
 MainWindow::~MainWindow()
@@ -37,9 +37,10 @@ void MainWindow::on_actionOpen_triggered()
     if(!f_nom.isEmpty())
     {
         load_file(f_nom);
+        ui->actionOpen->setDisabled(true);
         ui->actionClose->setDisabled(false);
         ui->actionSave_as->setDisabled(false);
-        ui->actionExport->setDisabled(false);
+        ui->actionTikZ_for_LaTeX->setDisabled(false);
     }
 }
 
@@ -60,7 +61,7 @@ void MainWindow::on_actionClose_triggered()
         s = nullptr;
         ui->actionClose->setDisabled(true);
         ui->actionSave_as->setDisabled(true);
-        ui->actionExport->setDisabled(true);
+        ui->actionOpen->setDisabled(false);
     }
 }
 
@@ -73,49 +74,22 @@ void MainWindow::on_actionSave_as_triggered()
     }
 }
 
-void MainWindow::on_actionExport_triggered()
+void MainWindow::on_actionTikZ_for_LaTeX_triggered()
 {
-    QString f_nom=QFileDialog::getSaveFileName(this,tr("Export"),tr("."),tr("TikZ LaTeX (*.tex);;PNG Image (*.png);;JPG Image (*.jpg);;PDF File (*.pdf)"));
+    QString f_nom=QFileDialog::getSaveFileName(this,tr("Export"),tr("."),tr("LaTeX Source Files (*.tex)"));
+    if (!f_nom.isEmpty()) {
+        compute_style();
+        s->exportToTikZ(f_nom.toStdString().c_str());
+    }
 }
 
 void MainWindow::load_file(QString f_nom) {
-    /*QGraphicsScene *scene = new QGraphicsScene;*/
     s = new Solutions(f_nom.toStdString().c_str());
     ui->Graphique->setSolution(s);
-    /*const QBrush dots(Qt::darkRed);*/
-
-    //View values
-    /*qreal point_size = 10.;
-    qreal unit_width = (ui->Vue->geometry().width() - 2*point_size) / (s->getMaxX() - s->getMinX());
-    qreal unit_height = (ui->Vue->geometry().height() - 2*point_size) / (s->getMaxY() - s->getMinY());*/
-
-
-    //Points
-    /*std::vector<FPoint> v = s->getPts();
-    QVector<double> x(v.size()), y(v.size());
-    int j = 0;
-    for (FPointv::iterator i = v.begin(); i != v.end(); ++i) {*/
-        /*scene->addEllipse(i->getX()*unit_width - point_size/2.,
-                          -(i->getY()*unit_height + point_size/2.),
-                          point_size/1,
-                          point_size/1,
-                          QPen(),
-                          dots);*/
-        /*x[j] = i->getX();
-        y[j] = i->getY();
-        ++j;
-    }*/
-    /*
-    ui->Graphique->addGraph();
-    ui->Graphique->graph(0)->setData(x,y);
-    ui->Graphique->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssPlusCircle, Qt::blue, Qt::NoBrush, 10));
-    ui->Graphique->graph(0)->setLineStyle(QCPGraph::lsNone);*/
-
 
     // Pareto Frontier
     QColor f_color = Qt::darkRed;
     s->compute_frontiers();
-    std::cout << "Pareto frontier" << std::endl;
     ParetoFrontv pareto = s->getPFrontiers();
     int factor;
 
@@ -141,4 +115,9 @@ void MainWindow::load_file(QString f_nom) {
     ui->Graphique->xAxis->setRange(s->getMinX()-.05*(s->getMaxX()-s->getMinX()), s->getMaxX()+.05*(s->getMaxX()-s->getMinX()));
     ui->Graphique->yAxis->setRange(s->getMinY()-.05*(s->getMaxY()-s->getMinY()), s->getMaxY()+.05*(s->getMaxY()-s->getMinY()));
     ui->Graphique->replot();
+}
+
+void MainWindow::compute_style() {
+    s->getStyle().setX_step(ui->Graphique->xAxis->tickStep());
+    s->getStyle().setY_step(ui->Graphique->yAxis->tickStep());
 }

@@ -9,9 +9,7 @@ Solutions::Solutions(const char *name) :
     y_min_(std::numeric_limits<float>::max()),
     y_max_(std::numeric_limits<float>::min()),
     filename_(name) {
-    int i = 0;
     double x, y;
-    bool next = false;
     std::string buf;
 	std::ifstream ifs (name,std::ifstream::in);
     //HEADER
@@ -94,6 +92,11 @@ const ParetoFrontv & Solutions::getPFrontiers() const {
     return pFrontiers_;
 }
 
+Style &Solutions::getStyle()
+{
+    return style_;
+}
+
 FPointPtrv * Solutions::findPointsInArea(FPoint &top_left, FPoint &bottom_right) const {
     FPointPtrv * in_area = new FPointPtrv;
     //Nvelle version
@@ -131,7 +134,6 @@ FPointPtrv * Solutions::findPointsInArea(FPoint &top_left, FPoint &bottom_right)
 }
 
 void Solutions::compute_frontiers() {
-    std::cout << "Compute frontiers" << std::endl;
     //Nvelle version plus efficace
     FPointPtrMMap::iterator x_itr;
     for (FPointv::iterator i = pts_.begin(); i != pts_.end(); ++i) {
@@ -195,3 +197,60 @@ void Solutions::saveToFile(const char * name) const {
     }
     output.close();
 }
+
+void Solutions::exportToTikZ(const char *name) const {
+    std::ofstream output;
+    output.open(name);
+
+    //File header
+    output << "\\documentclass{standalone}" << std::endl;
+    output << "\\usepackage[usenames,dvipsnames]{xcolor}" << std::endl;
+    output << "\\usepackage{tikz}" << std::endl;
+    output << "\\begin{document}" << std::endl;
+    output << "\\begin{tikzpicture}[scale=10pt]" << std::endl;
+
+    //grid
+    output << "\\draw[xstep=" << style_.x_step() << ",ystep=" << style_.y_step() << ",thin,dotted,color=Black] (" << x_min_ << "," << y_min_ << ") grid (" << x_max_ << "," << y_max_ << ");" << std::endl;
+    //xaxis
+    output << "\\draw (" << x_min_ << "," << y_min_ << ") -- coordinate (x axis mid) (" << x_max_ << "," << y_min_ << ");" << std::endl;
+    output << "\\foreach \\x in {" << x_min_ << "," << x_min_ + style_.x_step() << ",...," << x_max_ << "}" << std::endl;
+    output << "  \\draw (\\x,1pt) -- (\\x,-3pt) node[anchor=north] {\\x};" << std::endl;
+    //yaxis
+    output << "\\draw (" << x_min_ << "," << y_min_ << ") -- coordinate (y axis mid) (" << x_min_ << "," << y_max_ << ");" << std::endl;
+    output << "\\foreach \\y in {" << y_min_ << "," << y_min_ + style_.y_step() << ",...," << y_max_ << "}" << std::endl;
+    output << "  \\draw (" << x_min_ << "+1pt,\\y) -- (" << x_min_ << "-3pt,\\y) node[anchor=east] {\\y};" << std::endl;
+
+    //Points and fronts
+    for (ParetoFrontv::const_iterator front = pFrontiers_.begin() ; front != pFrontiers_.end(); ++front) {
+        output << "\\draw (" << front->front()->getX() << "," << front->front()->getY() << ") node[draw,fill=black,circle] {}";
+        for (ParetoFront::const_iterator point = front->begin()+1; point != front->end(); ++point) {
+            output << " -- (" << (*point)->getX() << "," << (*point)->getY() << ") node[draw,fill=black,circle] {}";
+        }
+        output << ";" << std::endl;
+    }
+
+    //End of file
+    output << "\\end{tikzpicture}" << std::endl;
+    output << "\\end{document}" << std::endl;
+
+    output.close();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

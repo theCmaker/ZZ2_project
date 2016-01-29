@@ -17,13 +17,15 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     Solutions.cpp \
     qcustomplot.cpp \
-    qcp_hover.cpp
+    qcp_hover.cpp \
+    style.cpp
 
 HEADERS  += mainwindow.h \
     Solutions.h \
     debug_stream.h \
     qcustomplot.h \
     Point.h \
-    qcp_hover.h
+    qcp_hover.h \
+    style.h
 
 FORMS    += mainwindow.ui
