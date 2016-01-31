@@ -76,10 +76,18 @@ void MainWindow::on_actionSave_as_triggered()
 
 void MainWindow::on_actionTikZ_for_LaTeX_triggered()
 {
-    QString f_nom=QFileDialog::getSaveFileName(this,tr("Export"),tr("."),tr("LaTeX Source Files (*.tex)"));
+    QString f_nom=QFileDialog::getSaveFileName(this,tr("Export to TikZ file"),tr("."),tr("LaTeX Source Files (*.tex)"));
     if (!f_nom.isEmpty()) {
         compute_style();
         s->exportToTikZ(f_nom.toStdString().c_str());
+    }
+}
+
+void MainWindow::on_actionPNG_Image_triggered()
+{
+    QString f_nom=QFileDialog::getSaveFileName(this,tr("Export to PNG Image"),tr("."),tr("PNG Files (*.png)"));
+    if (!f_nom.isEmpty()) {
+        ui->Graphique->savePng(f_nom,400,400,5);
     }
 }
 
@@ -120,4 +128,22 @@ void MainWindow::load_file(QString f_nom) {
 void MainWindow::compute_style() {
     s->getStyle().setX_step(ui->Graphique->xAxis->tickStep());
     s->getStyle().setY_step(ui->Graphique->yAxis->tickStep());
+    s->getStyle().setX_min(ui->Graphique->xAxis->pixelToCoord(ui->Graphique->axisRect()->rect().bottomLeft().x()));
+    s->getStyle().setX_max(ui->Graphique->xAxis->pixelToCoord(ui->Graphique->axisRect()->rect().bottomRight().x()));
+    s->getStyle().setY_max(ui->Graphique->yAxis->pixelToCoord(ui->Graphique->axisRect()->rect().topLeft().y()));
+    s->getStyle().setY_min(ui->Graphique->yAxis->pixelToCoord(ui->Graphique->axisRect()->rect().bottomLeft().y()));
+    s->getStyle().setX_ticks(ui->Graphique->xAxis->tickVector().toStdVector());
+    std::vector<QString> labels = ui->Graphique->xAxis->tickVectorLabels().toStdVector();
+    std::vector<std::string> stdlabels = std::vector<std::string>();
+    for (auto & i : labels) {
+        stdlabels.push_back(i.toStdString());
+    }
+    s->getStyle().setX_ticks_labels(stdlabels);
+    s->getStyle().setY_ticks(ui->Graphique->yAxis->tickVector().toStdVector());
+    labels = ui->Graphique->yAxis->tickVectorLabels().toStdVector();
+    stdlabels.clear();
+    for (auto & i : labels) {
+        stdlabels.push_back(i.toStdString());
+    }
+    s->getStyle().setY_ticks_labels(stdlabels);
 }

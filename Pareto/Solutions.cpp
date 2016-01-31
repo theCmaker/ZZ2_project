@@ -210,15 +210,33 @@ void Solutions::exportToTikZ(const char *name) const {
     output << "\\begin{tikzpicture}[scale=10pt]" << std::endl;
 
     //grid
-    output << "\\draw[xstep=" << style_.x_step() << ",ystep=" << style_.y_step() << ",thin,dotted,color=Black] (" << x_min_ << "," << y_min_ << ") grid (" << x_max_ << "," << y_max_ << ");" << std::endl;
+    output << "\\draw[xstep=" << style_.x_step() << ",ystep=" << style_.y_step() << ",thin,dotted,color=Black] (" << style_.x_min() << "," << style_.y_min() << ") grid (" << style_.x_max() << "," << style_.y_max() << ");" << std::endl;
     //xaxis
-    output << "\\draw (" << x_min_ << "," << y_min_ << ") -- coordinate (x axis mid) (" << x_max_ << "," << y_min_ << ");" << std::endl;
-    output << "\\foreach \\x in {" << x_min_ << "," << x_min_ + style_.x_step() << ",...," << x_max_ << "}" << std::endl;
-    output << "  \\draw (\\x,1pt) -- (\\x,-3pt) node[anchor=north] {\\x};" << std::endl;
+    std::vector<double>::iterator itr = style_.x_ticks().begin()+1;
+    std::vector<std::string>::iterator itrlabel = style_.x_ticks_labels().begin()+1;
+    output << "\\draw (" << style_.x_min() << "," << style_.y_min() << ") -- coordinate (x axis mid) (" << style_.x_max() << "," << style_.y_min() << ");" << std::endl;
+    output << "\\foreach \\x/\\xl in {";
+    while (itr != style_.x_ticks().end()-2) {
+        output << *itr << "/"
+               << *itr << "," ;
+        ++itr;
+        ++itrlabel;
+    }
+    output << *itr << "/" << *itr << "}" << std::endl;
+    output << "  \\draw (\\x," << style_.y_min() << ") -- (\\x," << style_.y_min() << ") node[anchor=north] {\\xl};" << std::endl;
     //yaxis
-    output << "\\draw (" << x_min_ << "," << y_min_ << ") -- coordinate (y axis mid) (" << x_min_ << "," << y_max_ << ");" << std::endl;
-    output << "\\foreach \\y in {" << y_min_ << "," << y_min_ + style_.y_step() << ",...," << y_max_ << "}" << std::endl;
-    output << "  \\draw (" << x_min_ << "+1pt,\\y) -- (" << x_min_ << "-3pt,\\y) node[anchor=east] {\\y};" << std::endl;
+    output << "\\draw (" << style_.x_min() << "," << style_.y_min() << ") -- coordinate (y axis mid) (" << style_.x_min() << "," << style_.y_max() << ");" << std::endl;
+    itr = style_.y_ticks().begin()+1;
+    itrlabel = style_.y_ticks_labels().begin()+1;
+    output << "\\foreach \\y/\\yl in {";
+    while (itr != style_.y_ticks().end()-2) {
+        output << *itr << "/"
+               << *itr << "," ;
+        ++itr;
+        ++itrlabel;
+    }
+    output << *itr << "/" << *itr << "}" << std::endl;
+    output << "  \\draw (" << style_.x_min() << ",\\y) -- (" << style_.x_min() << ",\\y) node[anchor=east] {\\yl};" << std::endl;
 
     //Points and fronts
     for (ParetoFrontv::const_iterator front = pFrontiers_.begin() ; front != pFrontiers_.end(); ++front) {

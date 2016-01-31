@@ -31,6 +31,7 @@ private slots:
     void on_actionClose_triggered();
     void on_actionSave_as_triggered();
     void on_actionTikZ_for_LaTeX_triggered();
+    void on_actionPNG_Image_triggered();
 
 private:
     Ui::MainWindow *ui;

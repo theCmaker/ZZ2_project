@@ -49,6 +49,86 @@ void Style::setY_step(float y_step)
 {
     y_step_ = y_step;
 }
+float Style::y_max() const
+{
+    return y_max_;
+}
+
+void Style::setY_max(float y_max)
+{
+    y_max_ = y_max;
+}
+float Style::y_min() const
+{
+    return y_min_;
+}
+
+void Style::setY_min(float y_min)
+{
+    y_min_ = y_min;
+}
+float Style::x_max() const
+{
+    return x_max_;
+}
+
+void Style::setX_max(float x_max)
+{
+    x_max_ = x_max;
+}
+float Style::x_min() const
+{
+    return x_min_;
+}
+
+void Style::setX_min(float x_min)
+{
+    x_min_ = x_min;
+}
+std::vector<double> Style::x_ticks() const
+{
+    return x_ticks_;
+}
+
+void Style::setX_ticks(const std::vector<double> x_ticks)
+{
+    x_ticks_ = x_ticks;
+}
+std::vector<double> Style::y_ticks() const
+{
+    return y_ticks_;
+}
+
+void Style::setY_ticks(const std::vector<double> y_ticks)
+{
+    y_ticks_ = y_ticks;
+}
+std::vector<std::string> Style::x_ticks_labels() const
+{
+    return x_ticks_labels_;
+}
+
+void Style::setX_ticks_labels(const std::vector<std::string> x_ticks_labels)
+{
+    x_ticks_labels_ = x_ticks_labels;
+}
+std::vector<std::string> Style::y_ticks_labels() const
+{
+    return y_ticks_labels_;
+}
+
+void Style::setY_ticks_labels(const std::vector<std::string> y_ticks_labels)
+{
+    y_ticks_labels_ = y_ticks_labels;
+}
+
+
+
+
+
+
+
+
 
 
 
