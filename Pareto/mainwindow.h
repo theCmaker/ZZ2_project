@@ -32,6 +32,14 @@ private slots:
     void on_actionSave_as_triggered();
     void on_actionTikZ_for_LaTeX_triggered();
     void on_actionPNG_Image_triggered();
+    void contextMenuRequest(QPoint pos);
+    void setPointStyleCross();
+    void setPointStylePlus();
+    void setPointStyleCircle();
+    void setPointStyleDisc();
+    void setPointStyleSquare();
+    void setPointStyleDiamond();
+    void setPointStyleTriangle();
 
 private:
     Ui::MainWindow *ui;

@@ -11,6 +11,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     setWindowTitle("Visualisation de Front de Pareto");
     ui->Graphique->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables | QCP::iSelectItems);
+    ui->Graphique->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(ui->Graphique, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextMenuRequest(QPoint)));
     ui->actionClose->setDisabled(true);
     ui->actionSave_as->setDisabled(true);
     ui->actionTikZ_for_LaTeX->setDisabled(true);
@@ -146,4 +148,66 @@ void MainWindow::compute_style() {
         stdlabels.push_back(i.toStdString());
     }
     s->getStyle().setY_ticks_labels(stdlabels);
+}
+
+void MainWindow::contextMenuRequest(QPoint pos)
+{
+  QMenu *menu = new QMenu(this);
+  QMenu *menu_style = new QMenu("Style",menu);
+  menu->setAttribute(Qt::WA_DeleteOnClose);
+  menu_style->setAttribute(Qt::WA_DeleteOnClose);
+
+  if (ui->Graphique->selectedGraphs().size() > 0) {
+    menu_style->addAction("Cross", this, SLOT(setPointStyleCross()));
+    menu_style->addAction("Plus", this, SLOT(setPointStylePlus()));
+    menu_style->addAction("Circle", this, SLOT(setPointStyleCircle()));
+    menu_style->addAction("Disc", this, SLOT(setPointStyleDisc()));
+    menu_style->addAction("Square", this, SLOT(setPointStyleSquare()));
+    menu_style->addAction("Diamond", this, SLOT(setPointStyleDiamond()));
+    menu_style->addAction("Triangle", this, SLOT(setPointStyleTriangle()));
+    menu->addMenu(menu_style);
+  }
+  menu->popup(ui->Graphique->mapToGlobal(pos));
+}
+
+void MainWindow::setPointStyleCross() {
+    QCPScatterStyle style = ui->Graphique->selectedGraphs().first()->scatterStyle();
+    style.setShape(QCPScatterStyle::ssCross);
+    ui->Graphique->selectedGraphs().first()->setScatterStyle(style);
+}
+
+void MainWindow::setPointStylePlus() {
+    QCPScatterStyle style = ui->Graphique->selectedGraphs().first()->scatterStyle();
+    style.setShape(QCPScatterStyle::ssPlus);
+    ui->Graphique->selectedGraphs().first()->setScatterStyle(style);
+}
+
+void MainWindow::setPointStyleCircle() {
+    QCPScatterStyle style = ui->Graphique->selectedGraphs().first()->scatterStyle();
+    style.setShape(QCPScatterStyle::ssCircle);
+    ui->Graphique->selectedGraphs().first()->setScatterStyle(style);
+}
+
+void MainWindow::setPointStyleDisc() {
+    QCPScatterStyle style = ui->Graphique->selectedGraphs().first()->scatterStyle();
+    style.setShape(QCPScatterStyle::ssDisc);
+    ui->Graphique->selectedGraphs().first()->setScatterStyle(style);
+}
+
+void MainWindow::setPointStyleSquare() {
+    QCPScatterStyle style = ui->Graphique->selectedGraphs().first()->scatterStyle();
+    style.setShape(QCPScatterStyle::ssSquare);
+    ui->Graphique->selectedGraphs().first()->setScatterStyle(style);
+}
+
+void MainWindow::setPointStyleDiamond() {
+    QCPScatterStyle style = ui->Graphique->selectedGraphs().first()->scatterStyle();
+    style.setShape(QCPScatterStyle::ssDiamond);
+    ui->Graphique->selectedGraphs().first()->setScatterStyle(style);
+}
+
+void MainWindow::setPointStyleTriangle() {
+    QCPScatterStyle style = ui->Graphique->selectedGraphs().first()->scatterStyle();
+    style.setShape(QCPScatterStyle::ssTriangle);
+    ui->Graphique->selectedGraphs().first()->setScatterStyle(style);
 }
