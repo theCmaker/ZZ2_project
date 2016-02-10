@@ -61,6 +61,7 @@ class Solutions
           Style         &  getStyle            ();
           FPointPtrv    *  findPointsInArea    (FPoint &, FPoint &)    const;
           void             compute_frontiers   ();
+          float            compute_hypervolumen(ParetoFront f)         const;
           void             saveToFile          (const char *)          const;
           void             exportToTikZ        (const char *)          const;
 };

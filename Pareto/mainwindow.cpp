@@ -15,12 +15,19 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->Graphique, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextMenuRequest(QPoint)));
     ui->actionClose->setDisabled(true);
     ui->actionSave_as->setDisabled(true);
+    ui->actionGNUPlot->setDisabled(true);
+    ui->actionJPG_Image->setDisabled(true);
+    ui->actionPNG_Image->setDisabled(true);
+    ui->actionPDF_File->setDisabled(true);
     ui->actionTikZ_for_LaTeX->setDisabled(true);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+    if (s != nullptr) {
+        delete s;
+    }
 }
 
 //------------------------------------------------------------------------
@@ -42,6 +49,10 @@ void MainWindow::on_actionOpen_triggered()
         ui->actionOpen->setDisabled(true);
         ui->actionClose->setDisabled(false);
         ui->actionSave_as->setDisabled(false);
+        //ui->actionGNUPlot->setDisabled(false);
+        ui->actionJPG_Image->setDisabled(false);
+        ui->actionPNG_Image->setDisabled(false);
+        ui->actionPDF_File->setDisabled(false);
         ui->actionTikZ_for_LaTeX->setDisabled(false);
     }
 }
@@ -63,6 +74,11 @@ void MainWindow::on_actionClose_triggered()
         s = nullptr;
         ui->actionClose->setDisabled(true);
         ui->actionSave_as->setDisabled(true);
+        ui->actionGNUPlot->setDisabled(true);
+        ui->actionJPG_Image->setDisabled(true);
+        ui->actionPNG_Image->setDisabled(true);
+        ui->actionPDF_File->setDisabled(true);
+        ui->actionTikZ_for_LaTeX->setDisabled(true);
         ui->actionOpen->setDisabled(false);
     }
 }
@@ -93,6 +109,22 @@ void MainWindow::on_actionPNG_Image_triggered()
     }
 }
 
+void MainWindow::on_actionJPG_Image_triggered()
+{
+    QString f_nom=QFileDialog::getSaveFileName(this,tr("Export to JPG Image"),tr("."),tr("JPG Files (*.jpg,*.jpeg)"));
+    if (!f_nom.isEmpty()) {
+        ui->Graphique->saveJpg(f_nom,400,400,5);
+    }
+}
+
+void MainWindow::on_actionPDF_File_triggered()
+{
+    QString f_nom=QFileDialog::getSaveFileName(this,tr("Export to PDF File"),tr("."),tr("PDF Files (*.pdf,*.xpdf)"));
+    if (!f_nom.isEmpty()) {
+        ui->Graphique->savePdf(f_nom);
+    }
+}
+
 void MainWindow::load_file(QString f_nom) {
     s = new Solutions(f_nom.toStdString().c_str());
     ui->Graphique->setSolution(s);
@@ -103,13 +135,17 @@ void MainWindow::load_file(QString f_nom) {
     ParetoFrontv pareto = s->getPFrontiers();
     int factor;
 
-    QVector<QVector<double> > pareto_x(pareto.size()), pareto_y(pareto.size());
+    QVector<QVector<double> >   pareto_x(pareto.size()),
+                                pareto_y(pareto.size());
+
     for (unsigned i = 0; i < pareto.size(); ++i) {
         for (ParetoFront::iterator pitr = pareto[i].begin(); pitr != pareto[i].end(); ++pitr) {
             pareto_x[i].append((*pitr)->getX());
             pareto_y[i].append((*pitr)->getY());
         }
     }
+
+    std::cout << "Hypervolumen" << std::endl;
     for (unsigned i = 0; i < pareto.size(); ++i) {
         factor = (225 * i)/pareto.size() + 100;
         ui->Graphique->addGraph();
@@ -117,6 +153,7 @@ void MainWindow::load_file(QString f_nom) {
         ui->Graphique->graph(i)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, f_color.lighter(factor), f_color.lighter(factor), 10));
         ui->Graphique->graph(i)->setLineStyle(QCPGraph::lsLine);
         ui->Graphique->graph(i)->setPen(QPen(f_color.lighter(factor)));
+        std::cout << "Front " << i << ": " << s->compute_hypervolumen((pareto[i])) << std::endl;
     }
 
     // set axes
@@ -152,12 +189,12 @@ void MainWindow::compute_style() {
 
 void MainWindow::contextMenuRequest(QPoint pos)
 {
-  QMenu *menu = new QMenu(this);
-  QMenu *menu_style = new QMenu("Style",menu);
-  menu->setAttribute(Qt::WA_DeleteOnClose);
-  menu_style->setAttribute(Qt::WA_DeleteOnClose);
-
   if (ui->Graphique->selectedGraphs().size() > 0) {
+    QMenu *menu = new QMenu(this);
+    QMenu *menu_style = new QMenu("Style",menu);
+    menu->setAttribute(Qt::WA_DeleteOnClose);
+    menu_style->setAttribute(Qt::WA_DeleteOnClose);
+
     menu_style->addAction("Cross", this, SLOT(setPointStyleCross()));
     menu_style->addAction("Plus", this, SLOT(setPointStylePlus()));
     menu_style->addAction("Circle", this, SLOT(setPointStyleCircle()));
@@ -166,48 +203,41 @@ void MainWindow::contextMenuRequest(QPoint pos)
     menu_style->addAction("Diamond", this, SLOT(setPointStyleDiamond()));
     menu_style->addAction("Triangle", this, SLOT(setPointStyleTriangle()));
     menu->addMenu(menu_style);
+
+    menu->popup(ui->Graphique->mapToGlobal(pos));
   }
-  menu->popup(ui->Graphique->mapToGlobal(pos));
+}
+
+void MainWindow::setPointStyle(QCPScatterStyle::ScatterShape shape) {
+    QCPScatterStyle style = ui->Graphique->selectedGraphs().first()->scatterStyle();
+    style.setShape(shape);
+    ui->Graphique->selectedGraphs().first()->setScatterStyle(style);
 }
 
 void MainWindow::setPointStyleCross() {
-    QCPScatterStyle style = ui->Graphique->selectedGraphs().first()->scatterStyle();
-    style.setShape(QCPScatterStyle::ssCross);
-    ui->Graphique->selectedGraphs().first()->setScatterStyle(style);
+    setPointStyle(QCPScatterStyle::ssCross);
 }
 
 void MainWindow::setPointStylePlus() {
-    QCPScatterStyle style = ui->Graphique->selectedGraphs().first()->scatterStyle();
-    style.setShape(QCPScatterStyle::ssPlus);
-    ui->Graphique->selectedGraphs().first()->setScatterStyle(style);
+    setPointStyle(QCPScatterStyle::ssPlus);
 }
 
 void MainWindow::setPointStyleCircle() {
-    QCPScatterStyle style = ui->Graphique->selectedGraphs().first()->scatterStyle();
-    style.setShape(QCPScatterStyle::ssCircle);
-    ui->Graphique->selectedGraphs().first()->setScatterStyle(style);
+    setPointStyle(QCPScatterStyle::ssCircle);
 }
 
 void MainWindow::setPointStyleDisc() {
-    QCPScatterStyle style = ui->Graphique->selectedGraphs().first()->scatterStyle();
-    style.setShape(QCPScatterStyle::ssDisc);
-    ui->Graphique->selectedGraphs().first()->setScatterStyle(style);
+    setPointStyle(QCPScatterStyle::ssDisc);
 }
 
 void MainWindow::setPointStyleSquare() {
-    QCPScatterStyle style = ui->Graphique->selectedGraphs().first()->scatterStyle();
-    style.setShape(QCPScatterStyle::ssSquare);
-    ui->Graphique->selectedGraphs().first()->setScatterStyle(style);
+    setPointStyle(QCPScatterStyle::ssSquare);
 }
 
 void MainWindow::setPointStyleDiamond() {
-    QCPScatterStyle style = ui->Graphique->selectedGraphs().first()->scatterStyle();
-    style.setShape(QCPScatterStyle::ssDiamond);
-    ui->Graphique->selectedGraphs().first()->setScatterStyle(style);
+    setPointStyle(QCPScatterStyle::ssDiamond);
 }
 
 void MainWindow::setPointStyleTriangle() {
-    QCPScatterStyle style = ui->Graphique->selectedGraphs().first()->scatterStyle();
-    style.setShape(QCPScatterStyle::ssTriangle);
-    ui->Graphique->selectedGraphs().first()->setScatterStyle(style);
+    setPointStyle(QCPScatterStyle::ssTriangle);
 }

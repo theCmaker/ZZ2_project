@@ -254,21 +254,21 @@ void Solutions::exportToTikZ(const char *name) const {
     output.close();
 }
 
+float Solutions::compute_hypervolumen(ParetoFront f) const {
+    float hv = 1.;
+    float delta_x = x_max_ - x_min_;
+    float delta_y = y_max_ - y_min_;
+    ParetoFront::iterator i = f.begin();
 
+    // Compute until penultimate point
+    while (i != f.end()-1) {
+        // Remove rectangle above current point till next point
+        hv -= (((*(i+1))->getX() - (*i)->getX()) / delta_x) * ((y_max_ - (*i)->getY()) / delta_y);
+        ++i;
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    // Last point -> rectangle computed with x_max_ as right side abscissa
+    // (projection on line x = x_max_)
+    hv -= ((x_max_ - (*i)->getX()) / delta_x) * ((y_max_ - (*i)->getY()) / delta_y);
+    return hv;
+}

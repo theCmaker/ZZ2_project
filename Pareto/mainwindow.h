@@ -20,6 +20,7 @@ class MainWindow : public QMainWindow
 protected:
     void load_file(QString);
     void compute_style();
+    void setPointStyle(QCPScatterStyle::ScatterShape shape);
 
 public:
     explicit MainWindow(QWidget *parent = 0);
@@ -27,11 +28,16 @@ public:
     ~MainWindow();
 
 private slots:
+    // File menu
     void on_actionOpen_triggered();
     void on_actionClose_triggered();
     void on_actionSave_as_triggered();
     void on_actionTikZ_for_LaTeX_triggered();
     void on_actionPNG_Image_triggered();
+    void on_actionJPG_Image_triggered();
+    void on_actionPDF_File_triggered();
+
+    // Context menu
     void contextMenuRequest(QPoint pos);
     void setPointStyleCross();
     void setPointStylePlus();

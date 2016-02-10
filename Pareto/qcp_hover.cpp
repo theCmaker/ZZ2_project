@@ -27,7 +27,6 @@ void QCPHover::mouseMoveEvent(QMouseEvent *event) {
         if (abs(old_cursor_pos_.x() - cursor_pos_.x()) > 5 || abs(old_cursor_pos_.y() - cursor_pos_.y()) > 5) {
             if (abs(old_cursor_pos_.x() - cursor_pos_.x()) < 10 || abs(old_cursor_pos_.y() - cursor_pos_.y()) < 10) {
                 replot();
-            } else {
             }
             old_cursor_pos_ = cursor_pos_;
         }
@@ -54,24 +53,38 @@ void QCPHover::paintInfo() {
         if (! pts_in_area->empty()) {
             std::string pop_up;
             bool first = true;
-            for(FPointPtrv::iterator i = pts_in_area->begin(); i != pts_in_area->end(); ++i) {
+            int j = 0;
+            FPointPtrv::iterator i;
+            for(i = pts_in_area->begin(); i != pts_in_area->end() && j < 10; ++i) {
                 if (!first) {
                     pop_up += '\n';
                 } else {
                     first = false;
                 }
                 pop_up.append((*i)->toString());
+                j++;
             }
-            QRect rect(cursor_pos_,QSize(350,200));
-            QRectF * brect = new QRectF();
-            //painter.drawRect(rect);
-            //painter.TextAntialiasing = false;
+            if (j == 10 && i != pts_in_area->end()) {
+                pop_up += '\n';
+                pop_up += "...";
+            }
+            QRectF rect(cursor_pos_,QSize(350,220));
+            QRectF brect = painter.boundingRect(rect,Qt::AlignLeft,QString(pop_up.c_str()));
+            //Check box visibility
+            if (brect.right() > painter.viewport().right()) {
+                brect.moveRight(painter.viewport().right());
+            }
+            if (brect.bottom() > painter.viewport().bottom()) {
+                brect.moveBottom(painter.viewport().bottom());
+                if (brect.bottom() > painter.viewport().bottom()) {
+                    brect.moveTop(painter.viewport().top());
+                }
+            }
+            //    if (brect.moveTopRight())
+            // Display: gray box with text
             painter.setBrush(QColor(Qt::gray).lighter(150));
-            painter.drawText(rect,Qt::AlignLeft,QString(pop_up.c_str()),brect);
-            painter.drawRoundedRect(*brect,5,5);
-            painter.drawText(rect,Qt::AlignLeft,QString(pop_up.c_str()),brect);
-            //painter.drawText();
-            //painter.drawText(cursor_pos_, pop_up.c_str());
+            painter.drawRoundedRect(brect,8,8);
+            painter.drawText(brect,Qt::AlignLeft,QString(pop_up.c_str()));
         }
     }
 }
