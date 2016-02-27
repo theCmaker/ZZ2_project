@@ -11,6 +11,7 @@ QCPHover::QCPHover(QSplitter*&split) : QCustomPlot(split) {}
 
 QCPHover::~QCPHover() {}
 
+
 void QCPHover::setSolution(Solutions *s) {
     sln_ = s;
 }
@@ -18,7 +19,11 @@ void QCPHover::setSolution(Solutions *s) {
 Solutions * QCPHover::getSolution() const {
     return sln_;
 }
-
+/**
+ * @brief QCPHover::mouseMoveEvent
+ * @param event
+ * @bug   When click on many fronts
+ */
 void QCPHover::mouseMoveEvent(QMouseEvent *event) {
     if (event->buttons() != Qt::NoButton) {
         QCustomPlot::mouseMoveEvent(event);
@@ -39,7 +44,6 @@ void QCPHover::paintEvent(QPaintEvent *event) {
 }
 
 void QCPHover::paintInfo() {
-
     QPainter painter(this);
     int radius = 10;
 
@@ -72,11 +76,14 @@ void QCPHover::paintInfo() {
             QRectF brect = painter.boundingRect(rect,Qt::AlignLeft,QString(pop_up.c_str()));
             //Check box visibility
             if (brect.right() > painter.viewport().right()) {
-                brect.moveRight(painter.viewport().right());
+                brect.moveRight(cursor_pos_.x() - 5);
             }
             if (brect.bottom() > painter.viewport().bottom()) {
-                brect.moveBottom(painter.viewport().bottom());
+                brect.moveBottom(cursor_pos_.y() - 5);
                 if (brect.bottom() > painter.viewport().bottom()) {
+                    brect.moveBottom(painter.viewport().bottom());
+                }
+                if (brect.top() < painter.viewport().top()) {
                     brect.moveTop(painter.viewport().top());
                 }
             }

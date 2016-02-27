@@ -8,22 +8,18 @@
 #include <vector>
 #include <set>
 #include <map>
-#include "Point.h"
 #include "style.h"
+#include "front.h"
 
-//#include <boost/geometry.hpp>
-//#include <boost/geometry/geometries/point.hpp>
-//namespace bg = boost::geometry;
-//typedef bg::model::point<float, 2, bg::cs::cartesian> Point;
+class QCPHover;
 
-typedef Point<float> FPoint;
 typedef std::vector<FPoint> FPointv;
 typedef std::vector<FPoint *> FPointPtrv;
 typedef std::set<FPoint> FPoints;
 typedef std::set<FPoint *> FPointPtrS;
 typedef std::map<float,FPoint *> FPointPtrMap;
 typedef std::map<float,FPointPtrMap > FPointPtrMMap;
-typedef std::vector<FPoint *> ParetoFront;
+typedef Front ParetoFront;
 typedef std::vector<ParetoFront> ParetoFrontv;
 
 class Solutions
@@ -57,13 +53,16 @@ class Solutions
 
     const FPointv       &  getPts              ()                      const;
     const FPointPtrMMap &  getPtsMap           ()                      const;
-    const ParetoFrontv  &  getPFrontiers       ()                      const;
+          ParetoFrontv  &  getPFrontiers       ();
           Style         &  getStyle            ();
           FPointPtrv    *  findPointsInArea    (FPoint &, FPoint &)    const;
           void             compute_frontiers   ();
-          float            compute_hypervolumen(ParetoFront f)         const;
+          float            compute_hypervolumen(ParetoFront &);
+          void             compute_front_style (QCPHover *);
           void             saveToFile          (const char *)          const;
-          void             exportToTikZ        (const char *)          const;
+          void             exportToTikZ        (const char *);
+  private:
+    std::string tikzify(PointShape s) const;
 };
 
 #endif /* end of include guard: __SOLUTIONS_H__ */

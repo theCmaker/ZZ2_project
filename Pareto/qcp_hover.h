@@ -1,9 +1,8 @@
 #ifndef QCP_HOVER_H
 #define QCP_HOVER_H
 
-#include "qcustomplot.h"
 #include "Solutions.h"
-#include "Point.h"
+#include "qcustomplot.h"
 
 class QCPHover : public QCustomPlot
 {
@@ -19,9 +18,9 @@ public:
     Solutions * getSolution() const;
 
 private:
-    QPoint cursor_pos_;
-    QPoint old_cursor_pos_;
-    Solutions *sln_;
+    QPoint      cursor_pos_;
+    QPoint      old_cursor_pos_;
+    Solutions  *sln_;
 };
 
 #endif // QCP_HOVER_H

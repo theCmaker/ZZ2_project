@@ -47,6 +47,8 @@ private slots:
     void setPointStyleDiamond();
     void setPointStyleTriangle();
 
+    //Selection changes
+    void update_visualization_panel();
 private:
     Ui::MainWindow *ui;
 };

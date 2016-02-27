@@ -122,6 +122,39 @@ void Style::setY_ticks_labels(const std::vector<std::string> y_ticks_labels)
     y_ticks_labels_ = y_ticks_labels;
 }
 
+float Style::width() const
+{
+    return width_;
+}
+
+void Style::setWidth(float width)
+{
+    width_ = width;
+}
+
+float Style::height() const
+{
+    return height_;
+}
+
+void Style::setHeight(float height)
+{
+    height_ = height;
+}
+
+double Style::aspectRatio() const
+{
+    return aspect_ratio;
+}
+
+void Style::setAspectRatio(double value)
+{
+    aspect_ratio = value;
+}
+
+
+
+
 
 
 

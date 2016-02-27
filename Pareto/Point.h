@@ -2,6 +2,7 @@
 #define POINT_H
 
 #include <string>
+#include <iostream>
 
 template<typename T>
 class Point {

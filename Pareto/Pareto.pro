@@ -18,7 +18,8 @@ SOURCES += main.cpp\
     Solutions.cpp \
     qcustomplot.cpp \
     qcp_hover.cpp \
-    style.cpp
+    style.cpp \
+    front.cpp
 
 HEADERS  += mainwindow.h \
     Solutions.h \
@@ -26,6 +27,7 @@ HEADERS  += mainwindow.h \
     qcustomplot.h \
     Point.h \
     qcp_hover.h \
-    style.h
+    style.h \
+    front.h
 
 FORMS    += mainwindow.ui

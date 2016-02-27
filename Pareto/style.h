@@ -49,6 +49,15 @@ class Style
         std::vector<std::string> y_ticks_labels() const;
         void setY_ticks_labels(const std::vector<std::string> y_ticks_labels);
 
+        float width() const;
+        void setWidth(float width);
+
+        float height() const;
+        void setHeight(float height);
+
+        double aspectRatio() const;
+        void setAspectRatio(double value);
+
 private:
         bool has_grid_;
         bool has_axes_;
@@ -56,11 +65,13 @@ private:
 
         float x_step_;
         float y_step_;
+        float width_;
+        float height_;
+        double aspect_ratio;
         std::vector<double> x_ticks_;
         std::vector<double> y_ticks_;
         std::vector<std::string> x_ticks_labels_;
         std::vector<std::string> y_ticks_labels_;
-
 
         float y_max_;
         float y_min_;
