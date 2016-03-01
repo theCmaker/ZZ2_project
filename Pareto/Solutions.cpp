@@ -88,6 +88,11 @@ const std::string & Solutions::getFilename() const {
     return filename_;
 }
 
+int Solutions::getNbPts() const
+{
+    return nb_pts_;
+}
+
 ParetoFrontv & Solutions::getPFrontiers() {
     return pFrontiers_;
 }
@@ -119,7 +124,6 @@ FPointPtrv * Solutions::findPointsInArea(FPoint &top_left, FPoint &bottom_right)
             }
         }
     }
-
     return in_area;
 }
 

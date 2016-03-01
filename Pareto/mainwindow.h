@@ -21,6 +21,8 @@ protected:
     void load_file(QString);
     void compute_style();
     void setPointStyle(QCPScatterStyle::ScatterShape shape);
+    void show_stats();
+    void hide_stats();
 
 public:
     explicit MainWindow(QWidget *parent = 0);
@@ -49,6 +51,7 @@ private slots:
 
     //Selection changes
     void update_visualization_panel();
+
 private:
     Ui::MainWindow *ui;
 };

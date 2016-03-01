@@ -50,7 +50,7 @@ class Solutions
     const std::string & getAbscissa() const;
     const std::string & getOrdinate() const;
     const std::string & getFilename() const;
-
+          int              getNbPts            ()                      const;
     const FPointv       &  getPts              ()                      const;
     const FPointPtrMMap &  getPtsMap           ()                      const;
           ParetoFrontv  &  getPFrontiers       ();

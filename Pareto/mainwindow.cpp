@@ -10,7 +10,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
     setWindowTitle("ParetoFront Viewer");
+
     ui->Graphique->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables | QCP::iSelectItems);
     ui->Graphique->setContextMenuPolicy(Qt::CustomContextMenu);
 
@@ -25,12 +27,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->actionPDF_File->setDisabled(true);
     ui->actionTikZ_for_LaTeX->setDisabled(true);
 
-    ui->LabelNoFrontSelected->setVisible(true);
-    ui->LabelFront->setVisible(false);
-    ui->LabelHypervolumen->setVisible(false);
-    ui->ValueFront->setVisible(false);
-    ui->ValueHypervolumen->setVisible(false);
-
+    hide_stats();
 }
 
 MainWindow::~MainWindow()
@@ -71,6 +68,7 @@ void MainWindow::on_actionOpen_triggered()
 void MainWindow::on_actionClose_triggered()
 {
     if (s != nullptr) {
+        //View
         ui->Graphique->xAxis->setLabel(nullptr);
         ui->Graphique->yAxis->setLabel(nullptr);
         ui->Graphique->clearGraphs();
@@ -83,6 +81,10 @@ void MainWindow::on_actionClose_triggered()
         ui->Console->clear();
         delete s;
         s = nullptr;
+
+        hide_stats();
+
+        //Actions
         ui->actionClose->setDisabled(true);
         ui->actionSave_as->setDisabled(true);
         ui->actionGNUPlot->setDisabled(true);
@@ -165,6 +167,7 @@ void MainWindow::load_file(QString f_nom) {
         ui->Graphique->graph(i)->setPen(QPen(f_color.lighter(factor)));
 
         s->compute_hypervolumen(pareto[i]);
+        pareto[i].compute_distances();
     }
 
     // set axes
@@ -209,7 +212,6 @@ void MainWindow::contextMenuRequest(QPoint pos)
     QMenu *menu_style = new QMenu("Style",menu);
     menu->setAttribute(Qt::WA_DeleteOnClose);
     menu_style->setAttribute(Qt::WA_DeleteOnClose);
-
     menu_style->addAction("Cross", this, SLOT(setPointStyleCross()));
     menu_style->addAction("Plus", this, SLOT(setPointStylePlus()));
     menu_style->addAction("Circle", this, SLOT(setPointStyleCircle()));
@@ -224,10 +226,8 @@ void MainWindow::contextMenuRequest(QPoint pos)
 }
 
 void MainWindow::update_visualization_panel() {
-    std::cout << __func__ << std::endl;
     if (ui->Graphique->selectedGraphs().size() == 1) {
       //Find the selected graph
-      // itr;
       ParetoFrontv frontiers = s->getPFrontiers();
       bool found = false;
       unsigned index = 0;
@@ -259,31 +259,78 @@ void MainWindow::update_visualization_panel() {
             //then it is the same
             if (i == frontiers[index].pts().size() && itr == ui->Graphique->selectedGraphs()[0]->data()->end()) {
               found = true;
+            } else {
+            //otherwise, we need to try another front.
+                ++index;
             }
         }
       }
       if (found) {
         std::stringstream front_value;
         std::stringstream hypervolumen_value;
+        std::stringstream nbpoints_value;
+        std::stringstream meandistance_value;
+        std::stringstream maxdistance_value;
+        std::stringstream sumdistance_value;
 
         front_value << index;
         hypervolumen_value << frontiers[index].hypervolumen();
+        nbpoints_value << frontiers[index].pts().size();
+        meandistance_value << frontiers[index].mean_distance();
+        maxdistance_value << frontiers[index].max_distance();
+        sumdistance_value << frontiers[index].sum_distance();
+
         ui->ValueFront->setText(QString(front_value.str().c_str()));
         ui->ValueHypervolumen->setText(QString(hypervolumen_value.str().c_str()));
-        ui->LabelFront->setVisible(true);
-        ui->ValueFront->setVisible(true);
-        ui->ValueHypervolumen->setVisible(true);
-        ui->LabelHypervolumen->setVisible(true);
-        ui->LabelNoFrontSelected->setVisible(false);
+        ui->ValueNbPoints->setText(QString(nbpoints_value.str().c_str()));
+        ui->ValueMeanDistance->setText(QString(meandistance_value.str().c_str()));
+        ui->ValueMaxDistance->setText(QString(maxdistance_value.str().c_str()));
+        ui->ValueSumDistance->setText(QString(sumdistance_value.str().c_str()));
+
+        show_stats();
       }
     } else {
-        ui->LabelNoFrontSelected->setVisible(true);
-        ui->ValueFront->setVisible(false);
-        ui->ValueHypervolumen->setVisible(false);
-        ui->LabelFront->setVisible(false);
-        ui->LabelHypervolumen->setVisible(false);
+        hide_stats();
     }
-  }
+}
+
+void MainWindow::show_stats()
+{
+    //Labels
+    ui->LabelFront->setVisible(true);
+    ui->LabelHypervolumen->setVisible(true);
+    ui->LabelNbPoints->setVisible(true);
+    ui->LabelMeanDistance->setVisible(true);
+    ui->LabelMaxDistance->setVisible(true);
+    ui->LabelSumDistance->setVisible(true);
+    ui->LabelNoFrontSelected->setVisible(false);
+    //Values
+    ui->ValueFront->setVisible(true);
+    ui->ValueHypervolumen->setVisible(true);
+    ui->ValueNbPoints->setVisible(true);
+    ui->ValueMeanDistance->setVisible(true);
+    ui->ValueMaxDistance->setVisible(true);
+    ui->ValueSumDistance->setVisible(true);
+}
+
+void MainWindow::hide_stats()
+{
+    //Labels
+    ui->LabelNoFrontSelected->setVisible(true);
+    ui->LabelFront->setVisible(false);
+    ui->LabelHypervolumen->setVisible(false);
+    ui->LabelNbPoints->setVisible(false);
+    ui->LabelMeanDistance->setVisible(false);
+    ui->LabelMaxDistance->setVisible(false);
+    ui->LabelSumDistance->setVisible(false);
+    //Values
+    ui->ValueFront->setVisible(false);
+    ui->ValueHypervolumen->setVisible(false);
+    ui->ValueNbPoints->setVisible(false);
+    ui->ValueMeanDistance->setVisible(false);
+    ui->ValueMaxDistance->setVisible(false);
+    ui->ValueSumDistance->setVisible(false);
+}
 
 void MainWindow::setPointStyle(QCPScatterStyle::ScatterShape shape) {
     QCPScatterStyle style = ui->Graphique->selectedGraphs().first()->scatterStyle();
