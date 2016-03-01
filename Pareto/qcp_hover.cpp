@@ -3,11 +3,15 @@
 #include <iostream>
 #include <sstream>
 
-QCPHover::QCPHover() {
-    old_cursor_pos_ = QPoint(0,0);
-}
+QCPHover::QCPHover() :
+    sln_(nullptr),
+    old_cursor_pos_(QPoint(0,0))
+{}
 
-QCPHover::QCPHover(QSplitter*&split) : QCustomPlot(split) {}
+QCPHover::QCPHover(QSplitter*&split) : QCustomPlot(split),
+    sln_(nullptr),
+    old_cursor_pos_(QPoint(0,0))
+{}
 
 QCPHover::~QCPHover() {}
 
@@ -19,6 +23,7 @@ void QCPHover::setSolution(Solutions *s) {
 Solutions * QCPHover::getSolution() const {
     return sln_;
 }
+
 /**
  * @brief QCPHover::mouseMoveEvent
  * @param event
@@ -40,7 +45,9 @@ void QCPHover::mouseMoveEvent(QMouseEvent *event) {
 
 void QCPHover::paintEvent(QPaintEvent *event) {
     QCustomPlot::paintEvent(event);
-    paintInfo();
+    if (sln_) {
+        paintInfo();
+    }
 }
 
 void QCPHover::paintInfo() {
@@ -51,7 +58,7 @@ void QCPHover::paintInfo() {
     FPoint top_left(0,xAxis->pixelToCoord(cursor_pos_.x()-radius),yAxis->pixelToCoord(cursor_pos_.y()-radius)),
            bottom_right(0,xAxis->pixelToCoord(cursor_pos_.x()+radius),yAxis->pixelToCoord(cursor_pos_.y()+radius));
 
-    if (sln_) {
+    if (sln_ != nullptr && sln_->getNbPts() > 0) {
         this->setCursor(Qt::CrossCursor);
         FPointPtrv * pts_in_area = sln_->findPointsInArea(top_left,bottom_right);
         if (! pts_in_area->empty()) {
