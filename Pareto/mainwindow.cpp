@@ -17,7 +17,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->Graphique->setContextMenuPolicy(Qt::CustomContextMenu);
 
     connect(ui->Graphique, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextMenuRequest(QPoint)));
-    connect(ui->Graphique,SIGNAL(selectionChangedByUser()), this, SLOT(update_visualization_panel()));
+    connect(ui->Graphique, SIGNAL(selectionChangedByUser()), this, SLOT(update_visualization_panel()));
+    connect(ui->Graphique, SIGNAL(selectionChangedByUser()), this, SLOT(show_hypervolumen()));
 
     ui->actionClose->setDisabled(true);
     ui->actionSave_as->setDisabled(true);
@@ -69,15 +70,7 @@ void MainWindow::on_actionClose_triggered()
 {
     if (s != nullptr) {
         //View
-        ui->Graphique->xAxis->setLabel(nullptr);
-        ui->Graphique->yAxis->setLabel(nullptr);
-        ui->Graphique->clearGraphs();
-        ui->Graphique->clearItems();
-        ui->Graphique->clearPlottables();
-        ui->Graphique->clearFocus();
-        ui->Graphique->setSolution(nullptr);
-        ui->Graphique->replot();
-
+        ui->Graphique->reset();
         ui->Console->clear();
         delete s;
         s = nullptr;
@@ -140,11 +133,11 @@ void MainWindow::on_actionPDF_File_triggered()
 
 void MainWindow::load_file(QString f_nom) {
     s = new Solutions(f_nom.toStdString().c_str());
+    s->compute_frontiers();
     ui->Graphique->setSolution(s);
 
     // Pareto Frontier
     QColor f_color = Qt::darkRed;
-    s->compute_frontiers();
     ParetoFrontv & pareto = s->getPFrontiers();
     int factor;
 
@@ -364,4 +357,9 @@ void MainWindow::setPointStyleDiamond() {
 
 void MainWindow::setPointStyleTriangle() {
     setPointStyle(QCPScatterStyle::ssTriangle);
+}
+
+void MainWindow::show_hypervolumen()
+{
+    ui->Graphique->paintHypervolumen();
 }

@@ -51,6 +51,7 @@ private slots:
 
     //Selection changes
     void update_visualization_panel();
+    void show_hypervolumen();
 
 private:
     Ui::MainWindow *ui;

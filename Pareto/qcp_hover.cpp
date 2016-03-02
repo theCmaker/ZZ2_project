@@ -4,14 +4,18 @@
 #include <sstream>
 
 QCPHover::QCPHover() :
-    sln_(nullptr),
-    old_cursor_pos_(QPoint(0,0))
-{}
+    old_cursor_pos_(QPoint(0,0)),
+    sln_(nullptr)
+{
+    addPlottable(new QCPCurve(this->xAxis,this->yAxis));
+}
 
 QCPHover::QCPHover(QSplitter*&split) : QCustomPlot(split),
-    sln_(nullptr),
-    old_cursor_pos_(QPoint(0,0))
-{}
+    old_cursor_pos_(QPoint(0,0)),
+    sln_(nullptr)
+{
+    this->addPlottable(new QCPCurve(this->xAxis,this->yAxis));
+}
 
 QCPHover::~QCPHover() {}
 
@@ -27,7 +31,6 @@ Solutions * QCPHover::getSolution() const {
 /**
  * @brief QCPHover::mouseMoveEvent
  * @param event
- * @bug   When click on many fronts
  */
 void QCPHover::mouseMoveEvent(QMouseEvent *event) {
     if (event->buttons() != Qt::NoButton) {
@@ -101,4 +104,51 @@ void QCPHover::paintInfo() {
             painter.drawText(brect,Qt::AlignLeft,QString(pop_up.c_str()));
         }
     }
+}
+
+void QCPHover::paintHypervolumen()
+{
+    if (this->selectedGraphs().size() > 0) {
+        QCPDataMap * data = this->selectedGraphs()[0]->data();
+        QCPCurve * hypervolumen_area = (QCPCurve *) this->plottable(0);
+
+        QVector<double> data_x, data_y;
+        data_x.push_back(sln_->getMinX());
+        data_y.push_back(sln_->getMinY());
+        data_x.push_back(sln_->getMinX());
+        data_y.push_back(sln_->getMaxY());
+        data_x.push_back(data->firstKey());
+        data_y.push_back(sln_->getMaxY());
+        for (QCPDataMap::iterator itr = data->begin(); itr != data->end(); ++itr) {
+            data_x.push_back(itr->key);
+            data_y.push_back(itr->value);
+        }
+        data_x.push_back(sln_->getMaxX());
+        data_y.push_back(data->last().value);
+        data_x.push_back(sln_->getMaxX());
+        data_y.push_back(sln_->getMinY());
+        data_x.push_back(sln_->getMinX());
+        data_y.push_back(sln_->getMinY());
+
+        hypervolumen_area->setData(data_x,data_y);
+        QPen pen = this->selectedGraphs()[0]->pen();
+        hypervolumen_area->setPen(QPen(QColor(0,0,0,0)));
+        hypervolumen_area->setBrush(QBrush(QColor(pen.color().red(),pen.color().green(),pen.color().blue(),100)));//this->selectedGraphs()[0]->brush()
+        this->plottable(0)->setVisible(true);
+        this->replot();
+    } else {
+        this->plottable(0)->setVisible(false);
+    }
+}
+
+void QCPHover::reset() {
+    xAxis->setLabel(nullptr);
+    yAxis->setLabel(nullptr);
+    clearGraphs();
+    clearItems();
+    clearPlottables();
+    clearFocus();
+    setSolution(nullptr);
+    replot();
+    addPlottable(new QCPCurve(this->xAxis,this->yAxis));
 }

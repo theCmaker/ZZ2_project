@@ -14,8 +14,10 @@ public:
     void mouseMoveEvent(QMouseEvent *);
     void paintEvent(QPaintEvent *);
     void paintInfo();
+    void paintHypervolumen();
     void setSolution(Solutions *);
     Solutions * getSolution() const;
+    void reset();
 
 private:
     QPoint      cursor_pos_;
