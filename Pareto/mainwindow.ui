@@ -51,7 +51,7 @@
            </property>
            <property name="maximumSize">
             <size>
-             <width>500</width>
+             <width>250</width>
              <height>16777215</height>
             </size>
            </property>
@@ -72,7 +72,7 @@
             <item row="2" column="0">
              <widget class="QLabel" name="LabelMeanDistance">
               <property name="text">
-               <string>Mean Dist.</string>
+               <string>Mean Spacing</string>
               </property>
              </widget>
             </item>
@@ -123,7 +123,7 @@
             <item row="3" column="0">
              <widget class="QLabel" name="LabelMaxDistance">
               <property name="text">
-               <string>Max Dist.</string>
+               <string>Max Spacing</string>
               </property>
              </widget>
             </item>
@@ -151,7 +151,7 @@
             <item row="4" column="0">
              <widget class="QLabel" name="LabelSumDistance">
               <property name="text">
-               <string>Dist. Sum</string>
+               <string>Spacing Sum</string>
               </property>
              </widget>
             </item>
@@ -340,16 +340,34 @@
    </property>
   </action>
   <action name="actionGrid">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Grid</string>
    </property>
   </action>
   <action name="actionAxes">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Axes</string>
    </property>
   </action>
   <action name="actionLabels">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Axes' Labels</string>
    </property>

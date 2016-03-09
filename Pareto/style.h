@@ -11,13 +11,13 @@ class Style
         ~Style();
 
         bool has_grid() const;
-        void setHas_grid(bool has_grid);
+        void setHas_grid(bool);
 
         bool has_axes() const;
-        void setHas_axes(bool has_axes);
+        void setHas_axes(bool);
 
         bool has_axes_labels() const;
-        void setHas_axes_labels(bool has_axes_labels);
+        void setHas_axes_labels(bool);
 
         float x_step() const;
         void setX_step(float x_step);
@@ -43,12 +43,6 @@ class Style
         std::vector<double> y_ticks() const;
         void setY_ticks(const std::vector<double> y_ticks);
 
-        std::vector<std::string> x_ticks_labels() const;
-        void setX_ticks_labels(const std::vector<std::string> x_ticks_labels);
-
-        std::vector<std::string> y_ticks_labels() const;
-        void setY_ticks_labels(const std::vector<std::string> y_ticks_labels);
-
         float width() const;
         void setWidth(float width);
 
@@ -57,6 +51,9 @@ class Style
 
         double aspectRatio() const;
         void setAspectRatio(double value);
+
+        int selected_front() const;
+        void setSelected_front(int selected_front);
 
 private:
         bool has_grid_;
@@ -67,16 +64,15 @@ private:
         float y_step_;
         float width_;
         float height_;
-        double aspect_ratio;
+        double aspect_ratio_;
         std::vector<double> x_ticks_;
         std::vector<double> y_ticks_;
-        std::vector<std::string> x_ticks_labels_;
-        std::vector<std::string> y_ticks_labels_;
 
-        float y_max_;
-        float y_min_;
-        float x_max_;
+        int selected_front_;
         float x_min_;
+        float x_max_;
+        float y_min_;
+        float y_max_;
 };
 
 #endif // STYLE_H

@@ -1,6 +1,20 @@
 #include "style.h"
 
-Style::Style() {}
+Style::Style() :
+    has_grid_(true),
+    has_axes_(true),
+    has_axes_labels_(true),
+    x_step_(0.),
+    y_step_(0.),
+    width_(0.),
+    height_(0.),
+    aspect_ratio_(0.),
+    selected_front_(-1),
+    x_min_(0.),
+    x_max_(0.),
+    y_min_(0.),
+    y_max_(0.)
+{}
 
 Style::~Style() {}
 
@@ -103,24 +117,6 @@ void Style::setY_ticks(const std::vector<double> y_ticks)
 {
     y_ticks_ = y_ticks;
 }
-std::vector<std::string> Style::x_ticks_labels() const
-{
-    return x_ticks_labels_;
-}
-
-void Style::setX_ticks_labels(const std::vector<std::string> x_ticks_labels)
-{
-    x_ticks_labels_ = x_ticks_labels;
-}
-std::vector<std::string> Style::y_ticks_labels() const
-{
-    return y_ticks_labels_;
-}
-
-void Style::setY_ticks_labels(const std::vector<std::string> y_ticks_labels)
-{
-    y_ticks_labels_ = y_ticks_labels;
-}
 
 float Style::width() const
 {
@@ -144,26 +140,20 @@ void Style::setHeight(float height)
 
 double Style::aspectRatio() const
 {
-    return aspect_ratio;
+    return aspect_ratio_;
 }
 
 void Style::setAspectRatio(double value)
 {
-    aspect_ratio = value;
+    aspect_ratio_ = value;
 }
 
+int Style::selected_front() const
+{
+    return selected_front_;
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+void Style::setSelected_front(int selected_front)
+{
+    selected_front_ = selected_front;
+}

@@ -55,7 +55,7 @@ class Solutions
     const FPointPtrMMap &  getPtsMap           ()                      const;
           ParetoFrontv  &  getPFrontiers       ();
           Style         &  getStyle            ();
-          FPointPtrv    *  findPointsInArea    (FPoint &, FPoint &)    const;
+          FPointPtrv       findPointsInArea    (FPoint &, FPoint &)    const;
           void             compute_frontiers   ();
           float            compute_hypervolumen(ParetoFront &);
           void             compute_front_style (QCPHover *);

@@ -38,12 +38,15 @@ private slots:
     void on_actionPNG_Image_triggered();
     void on_actionJPG_Image_triggered();
     void on_actionPDF_File_triggered();
+    // View menu
+    void on_actionGrid_changed();
+    void on_actionAxes_changed();
+    void on_actionLabels_changed();
 
     // Context menu
     void contextMenuRequest(QPoint pos);
     void setPointStyleCross();
     void setPointStylePlus();
-    void setPointStyleCircle();
     void setPointStyleDisc();
     void setPointStyleSquare();
     void setPointStyleDiamond();
@@ -55,6 +58,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    std::string     file_path_;
 };
 
 #endif // MAINWINDOW_H

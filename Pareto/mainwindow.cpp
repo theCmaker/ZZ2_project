@@ -7,7 +7,8 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     s(nullptr),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    file_path_(".")
 {
     ui->setupUi(this);
 
@@ -28,11 +29,14 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->actionPDF_File->setDisabled(true);
     ui->actionTikZ_for_LaTeX->setDisabled(true);
 
+    ui->actionAxes->setDisabled(true);
+    ui->actionLabels->setDisabled(true);
+    ui->actionGrid->setDisabled(true);
+
     hide_stats();
 }
 
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow() {
     delete ui;
     if (s != nullptr) {
         delete s;
@@ -42,19 +46,20 @@ MainWindow::~MainWindow()
 //------------------------------------------------------------------------
 // composant de la sortie
 //------------------------------------------------------------------------
-QTextEdit* MainWindow::Sortie_application()
-{
+QTextEdit* MainWindow::Sortie_application() {
     return ui->Console;
 }
 
-void MainWindow::on_actionOpen_triggered()
-{
+void MainWindow::on_actionOpen_triggered() {
     //afficher la dialog de openfile
-    QString f_nom=QFileDialog::getOpenFileName(this,tr("Open file"),tr("."),tr("All files (*)"));
+    QString f_nom = QFileDialog::getOpenFileName(this,tr("Open file"),tr(file_path_.c_str()),tr("All files (*)"));
 
     if(!f_nom.isEmpty())
     {
-        load_file(f_nom);
+        //std::cout << f_nom.toStdString() << std::endl;
+        unsigned index = f_nom.toStdString().find_last_of('/');
+        file_path_ = f_nom.toStdString().substr(0,index);
+
         ui->actionOpen->setDisabled(true);
         ui->actionClose->setDisabled(false);
         ui->actionSave_as->setDisabled(false);
@@ -63,11 +68,20 @@ void MainWindow::on_actionOpen_triggered()
         ui->actionPNG_Image->setDisabled(false);
         ui->actionPDF_File->setDisabled(false);
         ui->actionTikZ_for_LaTeX->setDisabled(false);
+
+        ui->actionGrid->setDisabled(false);
+        ui->actionAxes->setDisabled(false);
+        ui->actionLabels->setDisabled(false);
+
+        ui->actionGrid->setChecked(true);
+        ui->actionAxes->setChecked(true);
+        ui->actionLabels->setChecked(true);
+
+        load_file(f_nom);
     }
 }
 
-void MainWindow::on_actionClose_triggered()
-{
+void MainWindow::on_actionClose_triggered() {
     if (s != nullptr) {
         //View
         ui->Graphique->reset();
@@ -86,49 +100,108 @@ void MainWindow::on_actionClose_triggered()
         ui->actionPDF_File->setDisabled(true);
         ui->actionTikZ_for_LaTeX->setDisabled(true);
         ui->actionOpen->setDisabled(false);
+
+        ui->actionAxes->setDisabled(true);
+        ui->actionLabels->setDisabled(true);
+        ui->actionGrid->setDisabled(true);
     }
 }
 
-void MainWindow::on_actionSave_as_triggered()
-{
-    QString f_nom=QFileDialog::getSaveFileName(this,tr("Save as"),tr("."),tr("All files (*)"));
+void MainWindow::on_actionSave_as_triggered() {
+    QString f_nom = QFileDialog::getSaveFileName(this,tr("Save as"),tr(file_path_.c_str()),tr("All files (*)"));
     if (!f_nom.isEmpty())
     {
+        unsigned index = f_nom.toStdString().find_last_of('/');
+        file_path_ = f_nom.toStdString().substr(0,index);
         s->saveToFile(f_nom.toStdString().c_str());
     }
 }
 
-void MainWindow::on_actionTikZ_for_LaTeX_triggered()
-{
-    QString f_nom=QFileDialog::getSaveFileName(this,tr("Export to TikZ file"),tr("."),tr("LaTeX Source Files (*.tex)"));
+void MainWindow::on_actionTikZ_for_LaTeX_triggered() {
+    QString f_nom=QFileDialog::getSaveFileName(this,tr("Export to TikZ file"),tr(file_path_.c_str()),tr("LaTeX Source Files (*.tex)"));
     if (!f_nom.isEmpty()) {
+        unsigned index = f_nom.toStdString().find_last_of('/');
+        file_path_ = f_nom.toStdString().substr(0,index);
         compute_style();
         s->exportToTikZ(f_nom.toStdString().c_str());
     }
 }
 
-void MainWindow::on_actionPNG_Image_triggered()
-{
-    QString f_nom=QFileDialog::getSaveFileName(this,tr("Export to PNG Image"),tr("."),tr("PNG Files (*.png)"));
+void MainWindow::on_actionPNG_Image_triggered() {
+    QString f_nom=QFileDialog::getSaveFileName(this,tr("Export to PNG Image"),tr(file_path_.c_str()),tr("PNG Files (*.png)"));
     if (!f_nom.isEmpty()) {
+        unsigned index = f_nom.toStdString().find_last_of('/');
+        file_path_ = f_nom.toStdString().substr(0,index);
         ui->Graphique->savePng(f_nom,400,400,5);
     }
 }
 
-void MainWindow::on_actionJPG_Image_triggered()
-{
-    QString f_nom=QFileDialog::getSaveFileName(this,tr("Export to JPG Image"),tr("."),tr("JPG Files (*.jpg,*.jpeg)"));
+void MainWindow::on_actionJPG_Image_triggered() {
+    QString f_nom = QFileDialog::getSaveFileName(this,tr("Export to JPG Image"),tr(file_path_.c_str()),tr("JPG Files (*.jpg,*.jpeg)"));
     if (!f_nom.isEmpty()) {
+        unsigned index = f_nom.toStdString().find_last_of('/');
+        file_path_ = f_nom.toStdString().substr(0,index);
         ui->Graphique->saveJpg(f_nom,400,400,5);
     }
 }
 
-void MainWindow::on_actionPDF_File_triggered()
-{
-    QString f_nom=QFileDialog::getSaveFileName(this,tr("Export to PDF File"),tr("."),tr("PDF Files (*.pdf,*.xpdf)"));
+void MainWindow::on_actionPDF_File_triggered() {
+    QString f_nom = QFileDialog::getSaveFileName(this,tr("Export to PDF File"),tr(file_path_.c_str()),tr("PDF Files (*.pdf,*.xpdf)"));
     if (!f_nom.isEmpty()) {
+        unsigned index = f_nom.toStdString().find_last_of('/');
+        file_path_ = f_nom.toStdString().substr(0,index);
         ui->Graphique->savePdf(f_nom);
     }
+}
+
+
+void MainWindow::on_actionAxes_changed()
+{
+    bool active = ui->actionAxes->isChecked();
+    ui->Graphique->xAxis->setVisible(active);
+    ui->Graphique->yAxis->setVisible(active);
+    if (!active) {
+        ui->actionGrid->setDisabled(true);
+        ui->actionLabels->setDisabled(true);
+    } else {
+        ui->actionGrid->setDisabled(false);
+        ui->actionLabels->setDisabled(false);
+    }
+    if (s != nullptr) {
+        s->getStyle().setHas_axes(active);
+        s->getStyle().setHas_grid(ui->actionGrid->isEnabled() && ui->actionGrid->isChecked());
+    }
+    ui->Graphique->replot();
+    //std::cout << "Axes are now " << (active?"enabled":"disabled") << std::endl;
+}
+
+void MainWindow::on_actionGrid_changed()
+{
+    bool active = ui->actionGrid->isChecked();
+    if (s != nullptr) {
+        s->getStyle().setHas_grid(active);
+    }
+    ui->Graphique->xAxis->grid()->setVisible(active);
+    ui->Graphique->yAxis->grid()->setVisible(active);
+    ui->Graphique->replot();
+    //std::cout << "Grid is now " << (active?"enabled":"disabled") << std::endl;
+}
+
+void MainWindow::on_actionLabels_changed()
+{
+    bool active = ui->actionLabels->isChecked();
+    if (s != nullptr) {
+        s->getStyle().setHas_axes_labels(active);
+    }
+    if (!active) {
+        ui->Graphique->xAxis->setLabel("");
+        ui->Graphique->yAxis->setLabel("");
+    } else if (s != nullptr) {
+        ui->Graphique->xAxis->setLabel(s->getAbscissa().c_str());
+        ui->Graphique->yAxis->setLabel(s->getOrdinate().c_str());
+    }
+    ui->Graphique->replot();
+    //std::cout << "Labels are now " << (active?"enabled":"disabled") << std::endl;
 }
 
 void MainWindow::load_file(QString f_nom) {
@@ -155,7 +228,7 @@ void MainWindow::load_file(QString f_nom) {
         factor = (225 * i)/pareto.size() + 100;
         ui->Graphique->addGraph();
         ui->Graphique->graph(i)->setData(pareto_x[i],pareto_y[i]);
-        ui->Graphique->graph(i)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, f_color.lighter(factor),QColor(255,255,255,0), 10));
+        ui->Graphique->graph(i)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssDisc, f_color.lighter(factor),f_color.lighter(factor), 10));
         ui->Graphique->graph(i)->setLineStyle(QCPGraph::lsLine);
         ui->Graphique->graph(i)->setPen(QPen(f_color.lighter(factor)));
 
@@ -182,24 +255,11 @@ void MainWindow::compute_style() {
     s->getStyle().setWidth(ui->Graphique->xAxis->range().size());
     s->getStyle().setHeight(ui->Graphique->yAxis->range().size());
     s->getStyle().setAspectRatio((double)ui->Graphique->height()/(double)ui->Graphique->width());
-    std::vector<QString> labels = ui->Graphique->xAxis->tickVectorLabels().toStdVector();
-    std::vector<std::string> stdlabels = std::vector<std::string>();
-    for (auto & i : labels) {
-        stdlabels.push_back(i.toStdString());
-    }
-    s->getStyle().setX_ticks_labels(stdlabels);
     s->getStyle().setY_ticks(ui->Graphique->yAxis->tickVector().toStdVector());
-    labels = ui->Graphique->yAxis->tickVectorLabels().toStdVector();
-    stdlabels.clear();
-    for (auto & i : labels) {
-        stdlabels.push_back(i.toStdString());
-    }
-    s->getStyle().setY_ticks_labels(stdlabels);
     s->compute_front_style(ui->Graphique);
 }
 
-void MainWindow::contextMenuRequest(QPoint pos)
-{
+void MainWindow::contextMenuRequest(QPoint pos) {
   if (ui->Graphique->selectedGraphs().size() == 1) {
     QMenu *menu = new QMenu(this);
     QMenu *menu_style = new QMenu("Style",menu);
@@ -207,7 +267,6 @@ void MainWindow::contextMenuRequest(QPoint pos)
     menu_style->setAttribute(Qt::WA_DeleteOnClose);
     menu_style->addAction("Cross", this, SLOT(setPointStyleCross()));
     menu_style->addAction("Plus", this, SLOT(setPointStylePlus()));
-    menu_style->addAction("Circle", this, SLOT(setPointStyleCircle()));
     menu_style->addAction("Disc", this, SLOT(setPointStyleDisc()));
     menu_style->addAction("Square", this, SLOT(setPointStyleSquare()));
     menu_style->addAction("Diamond", this, SLOT(setPointStyleDiamond()));
@@ -252,6 +311,7 @@ void MainWindow::update_visualization_panel() {
             //then it is the same
             if (i == frontiers[index].pts().size() && itr == ui->Graphique->selectedGraphs()[0]->data()->end()) {
               found = true;
+              s->getStyle().setSelected_front(index);
             } else {
             //otherwise, we need to try another front.
                 ++index;
@@ -284,11 +344,11 @@ void MainWindow::update_visualization_panel() {
       }
     } else {
         hide_stats();
+        s->getStyle().setSelected_front(-1);
     }
 }
 
-void MainWindow::show_stats()
-{
+void MainWindow::show_stats() {
     //Labels
     ui->LabelFront->setVisible(true);
     ui->LabelHypervolumen->setVisible(true);
@@ -306,8 +366,7 @@ void MainWindow::show_stats()
     ui->ValueSumDistance->setVisible(true);
 }
 
-void MainWindow::hide_stats()
-{
+void MainWindow::hide_stats() {
     //Labels
     ui->LabelNoFrontSelected->setVisible(true);
     ui->LabelFront->setVisible(false);
@@ -337,10 +396,6 @@ void MainWindow::setPointStyleCross() {
 
 void MainWindow::setPointStylePlus() {
     setPointStyle(QCPScatterStyle::ssPlus);
-}
-
-void MainWindow::setPointStyleCircle() {
-    setPointStyle(QCPScatterStyle::ssCircle);
 }
 
 void MainWindow::setPointStyleDisc() {

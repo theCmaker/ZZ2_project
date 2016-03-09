@@ -9,7 +9,7 @@
 #include <QTextEdit>
 
 //=======================================================================
-// class pour rediriger la srotie d'application vers un champ de texte..
+// class pour rediriger la sortie d'application vers un champ de texte..
 //=======================================================================
 class debug_stream : public std::basic_streambuf<char>
 {

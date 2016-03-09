@@ -104,6 +104,7 @@ void Front::compute_distances()
     double dist;
     max_distance_ = 0.;
     sum_distance_ = 0.;
+    mean_distance_ = 0.;
     if (pts_.size() > 1) {
         for (PolyLine::iterator itr = pts_.begin(); itr != pts_.end() - 1; ++itr) {
             dist = (*(itr+1))->getX() - (*itr)->getX() + (*itr)->getY() - (*(itr+1))->getY();
@@ -112,8 +113,8 @@ void Front::compute_distances()
                 max_distance_ = dist;
             }
         }
+        mean_distance_ = sum_distance_ / (double) (pts_.size() - 1);
     }
-    mean_distance_ = sum_distance_ / pts_.size();
 }
 
 

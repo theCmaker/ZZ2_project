@@ -22,7 +22,9 @@ public:
 private:
     QPoint      cursor_pos_;
     QPoint      old_cursor_pos_;
-    Solutions  *sln_;
+    Solutions * sln_;
+    QCPGraph  * last_selected_graph;
+    QPen        last_selected_graph_pen;
 };
 
 #endif // QCP_HOVER_H

@@ -5,15 +5,19 @@
 
 QCPHover::QCPHover() :
     old_cursor_pos_(QPoint(0,0)),
-    sln_(nullptr)
+    sln_(nullptr),
+    last_selected_graph(nullptr)
 {
+    //Add the hypervolumen layer
     addPlottable(new QCPCurve(this->xAxis,this->yAxis));
 }
 
 QCPHover::QCPHover(QSplitter*&split) : QCustomPlot(split),
     old_cursor_pos_(QPoint(0,0)),
-    sln_(nullptr)
+    sln_(nullptr),
+    last_selected_graph(nullptr)
 {
+    //Add the hypervolumen layer
     this->addPlottable(new QCPCurve(this->xAxis,this->yAxis));
 }
 
@@ -63,27 +67,28 @@ void QCPHover::paintInfo() {
 
     if (sln_ != nullptr && sln_->getNbPts() > 0) {
         this->setCursor(Qt::CrossCursor);
-        FPointPtrv * pts_in_area = sln_->findPointsInArea(top_left,bottom_right);
-        if (! pts_in_area->empty()) {
+        FPointPtrv pts_in_area = sln_->findPointsInArea(top_left,bottom_right);
+        if (! pts_in_area.empty()) {
             std::string pop_up;
             bool first = true;
             int j = 0;
             FPointPtrv::iterator i;
-            for(i = pts_in_area->begin(); i != pts_in_area->end() && j < 10; ++i) {
+            for(i = pts_in_area.begin(); i != pts_in_area.end() && j < 10; ++i) {
                 if (!first) {
                     pop_up += '\n';
                 } else {
                     first = false;
                 }
+                pop_up.append(" ");
                 pop_up.append((*i)->toString());
                 j++;
             }
-            if (j == 10 && i != pts_in_area->end()) {
+            if (j == 10 && i != pts_in_area.end()) {
                 pop_up += '\n';
                 pop_up += "...";
             }
-            QRectF rect(cursor_pos_,QSize(350,220));
-            QRectF brect = painter.boundingRect(rect,Qt::AlignLeft,QString(pop_up.c_str()));
+            QRectF rect(cursor_pos_,QSize(350,250));
+            QRectF brect = painter.boundingRect(rect,Qt::TextWordWrap,QString(pop_up.c_str()));
             //Check box visibility
             if (brect.right() > painter.viewport().right()) {
                 brect.moveRight(cursor_pos_.x() - 5);
@@ -97,10 +102,9 @@ void QCPHover::paintInfo() {
                     brect.moveTop(painter.viewport().top());
                 }
             }
-            //    if (brect.moveTopRight())
             // Display: gray box with text
             painter.setBrush(QColor(Qt::gray).lighter(150));
-            painter.drawRoundedRect(brect,8,8);
+            painter.drawRect(brect);
             painter.drawText(brect,Qt::AlignLeft,QString(pop_up.c_str()));
         }
     }
@@ -108,10 +112,26 @@ void QCPHover::paintInfo() {
 
 void QCPHover::paintHypervolumen()
 {
+    //Revoke color change on last selected graph
+    if (last_selected_graph != nullptr) {
+        QCPScatterStyle style = last_selected_graph->scatterStyle();
+        style.setPen(last_selected_graph_pen);
+        style.setBrush(QBrush(last_selected_graph_pen.color()));
+        last_selected_graph->setScatterStyle(style);
+    }
+    //Hypervolumen area
     if (this->selectedGraphs().size() > 0) {
-        QCPDataMap * data = this->selectedGraphs()[0]->data();
+        last_selected_graph = this->selectedGraphs()[0];
+        QCPDataMap * data = last_selected_graph->data();
         QCPCurve * hypervolumen_area = (QCPCurve *) this->plottable(0);
+        last_selected_graph_pen = last_selected_graph->pen();
 
+        QCPScatterStyle style = last_selected_graph->scatterStyle();
+        style.setPen(QPen(QColor(0,40,240)));
+        style.setBrush(QBrush(QColor(0,40,240)));
+        last_selected_graph->setScatterStyle(style);
+
+        //Adding points for the hypervolumen area
         QVector<double> data_x, data_y;
         data_x.push_back(sln_->getMinX());
         data_y.push_back(sln_->getMinY());
@@ -131,9 +151,11 @@ void QCPHover::paintHypervolumen()
         data_y.push_back(sln_->getMinY());
 
         hypervolumen_area->setData(data_x,data_y);
-        QPen pen = this->selectedGraphs()[0]->pen();
         hypervolumen_area->setPen(QPen(QColor(0,0,0,0)));
-        hypervolumen_area->setBrush(QBrush(QColor(pen.color().red(),pen.color().green(),pen.color().blue(),100)));//this->selectedGraphs()[0]->brush()
+        hypervolumen_area->setBrush(QBrush(QColor(last_selected_graph_pen.color().red(),
+                                                  last_selected_graph_pen.color().green(),
+                                                  last_selected_graph_pen.color().blue(),
+                                                  100)));
         this->plottable(0)->setVisible(true);
         this->replot();
     } else {
