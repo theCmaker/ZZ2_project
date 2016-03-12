@@ -1,0 +1,20 @@
+var searchData=
+[
+  ['getabscissa',['getAbscissa',['../classSolutions.html#a7e224baedeb19f701e29421812f60568',1,'Solutions']]],
+  ['getfilename',['getFilename',['../classSolutions.html#ac64f47544dc697978d6cb1e75ee4bbfd',1,'Solutions']]],
+  ['getid',['getId',['../classPoint.html#acd2a5d31eae22f20022e95454bdf6f26',1,'Point']]],
+  ['getinfo',['getInfo',['../classPoint.html#a996752313f1ced1e32ac069936bedbeb',1,'Point']]],
+  ['getmaxx',['getMaxX',['../classSolutions.html#abff06f699073e94506f59941c38245a9',1,'Solutions']]],
+  ['getmaxy',['getMaxY',['../classSolutions.html#abc0792cf247db90d987a18b5ecf3785a',1,'Solutions']]],
+  ['getminx',['getMinX',['../classSolutions.html#ad39d22eb0359cf8e2bd6f37dba8c997d',1,'Solutions']]],
+  ['getminy',['getMinY',['../classSolutions.html#addd9b927ce7f22b637ad94a78cd7ab88',1,'Solutions']]],
+  ['getnbpts',['getNbPts',['../classSolutions.html#a44cd289057bdee08e5027e6c11274a0e',1,'Solutions']]],
+  ['getordinate',['getOrdinate',['../classSolutions.html#acf93088976127506b65e224bce21098d',1,'Solutions']]],
+  ['getpfrontiers',['getPFrontiers',['../classSolutions.html#afea3fa0273654b75f18d132dba8d9451',1,'Solutions']]],
+  ['getpts',['getPts',['../classSolutions.html#ae2a4b106c2cf70d98e31148228e6ef9f',1,'Solutions']]],
+  ['getptsmap',['getPtsMap',['../classSolutions.html#a23dd46db4f08978e77613d7263407e51',1,'Solutions']]],
+  ['getsolution',['getSolution',['../classQCPHover.html#acb9257a14f31c96fb0b677256968f8bf',1,'QCPHover']]],
+  ['getstyle',['getStyle',['../classSolutions.html#a96badb4c40b8aca71178d94eb9a27858',1,'Solutions']]],
+  ['getx',['getX',['../classPoint.html#ac6447d75aba3edacbdc1ee5b9411517f',1,'Point']]],
+  ['gety',['getY',['../classPoint.html#a139dafe18186851e52aa0c83896a078b',1,'Point']]]
+];

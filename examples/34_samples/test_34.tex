@@ -1,0 +1,44 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{plotmarks}
+\usetikzlibrary{shapes,snakes,arrows}
+\begin{document}
+\begin{tikzpicture}[xscale=1.75387,yscale=0.757673]
+\draw[xstep=1,ystep=0.4,thin,dotted,color=Black] (0.249,0.619) grid (7.07483,4.1369);
+\begin{scope}
+  \clip (0.249,0.619) rectangle (7.07483,4.1369);
+  \definecolor{pLineColor}{RGB}{128,0,0}
+  \definecolor{pPointColor}{RGB}{128,0,0}
+  \draw[thick,color=pPointColor] (0.56,3.46) node[color=pPointColor,fill=pPointColor, circle, inner sep = 0pt, minimum size=2mm] {} -- (0.72,2.66) node[color=pPointColor,fill=pPointColor, circle, inner sep = 0pt, minimum size=2mm] {} -- (1.44,1.74) node[color=pPointColor,fill=pPointColor, circle, inner sep = 0pt, minimum size=2mm] {} -- (1.62,1.36) node[color=pPointColor,fill=pPointColor, circle, inner sep = 0pt, minimum size=2mm] {} -- (2.56,1.22) node[color=pPointColor,fill=pPointColor, circle, inner sep = 0pt, minimum size=2mm] {} -- (3.8,0.78) node[color=pPointColor,fill=pPointColor, circle, inner sep = 0pt, minimum size=2mm] {};
+  \definecolor{pLineColor}{RGB}{169,0,0}
+  \definecolor{pPointColor}{RGB}{169,0,0}
+  \draw[thick,color=pPointColor] (1.08,2.72) node[color=pPointColor,fill=pPointColor, circle, inner sep = 0pt, minimum size=2mm] {} -- (2.04,2.64) node[color=pPointColor,fill=pPointColor, circle, inner sep = 0pt, minimum size=2mm] {} -- (2.24,2.08) node[color=pPointColor,fill=pPointColor, circle, inner sep = 0pt, minimum size=2mm] {} -- (2.74,2) node[color=pPointColor,fill=pPointColor, circle, inner sep = 0pt, minimum size=2mm] {} -- (3.42,1.78) node[color=pPointColor,fill=pPointColor, circle, inner sep = 0pt, minimum size=2mm] {} -- (3.82,1.22) node[color=pPointColor,fill=pPointColor, circle, inner sep = 0pt, minimum size=2mm] {} -- (4.82,1.06) node[color=pPointColor,fill=pPointColor, circle, inner sep = 0pt, minimum size=2mm] {} -- (5.76,0.86) node[color=pPointColor,fill=pPointColor, circle, inner sep = 0pt, minimum size=2mm] {};
+  \definecolor{pLineColor}{RGB}{210,0,0}
+  \definecolor{pPointColor}{RGB}{210,0,0}
+  \draw[thick,color=pPointColor] (1.7,3.26) node[color=pPointColor,fill=pPointColor, circle, inner sep = 0pt, minimum size=2mm] {} -- (2.4,2.88) node[color=pPointColor,fill=pPointColor, circle, inner sep = 0pt, minimum size=2mm] {} -- (3.1,2.8) node[color=pPointColor,fill=pPointColor, circle, inner sep = 0pt, minimum size=2mm] {} -- (3.54,2.68) node[color=pPointColor,fill=pPointColor, circle, inner sep = 0pt, minimum size=2mm] {} -- (4.18,2.08) node[color=pPointColor,fill=pPointColor, circle, inner sep = 0pt, minimum size=2mm] {} -- (4.38,1.26) node[color=pPointColor,fill=pPointColor, circle, inner sep = 0pt, minimum size=2mm] {};
+  \definecolor{pLineColor}{RGB}{251,0,0}
+  \definecolor{pPointColor}{RGB}{251,0,0}
+  \draw[thick,color=pPointColor] (2.38,3.6) node[color=pPointColor,fill=pPointColor, circle, inner sep = 0pt, minimum size=2mm] {} -- (4,3) node[color=pPointColor,fill=pPointColor, circle, inner sep = 0pt, minimum size=2mm] {} -- (4.26,2.84) node[color=pPointColor,fill=pPointColor, circle, inner sep = 0pt, minimum size=2mm] {} -- (4.86,1.6) node[color=pPointColor,fill=pPointColor, circle, inner sep = 0pt, minimum size=2mm] {} -- (6.78,1.54) node[color=pPointColor,fill=pPointColor, circle, inner sep = 0pt, minimum size=2mm] {};
+  \definecolor{pLineColor}{RGB}{255,36,36}
+  \definecolor{pPointColor}{RGB}{255,36,36}
+  \draw[thick,color=pPointColor] (3.06,3.7) node[color=pPointColor,fill=pPointColor, circle, inner sep = 0pt, minimum size=2mm] {} -- (4.56,2.88) node[color=pPointColor,fill=pPointColor, circle, inner sep = 0pt, minimum size=2mm] {} -- (4.9,2.28) node[color=pPointColor,fill=pPointColor, circle, inner sep = 0pt, minimum size=2mm] {} -- (5.26,1.64) node[color=pPointColor,fill=pPointColor, circle, inner sep = 0pt, minimum size=2mm] {};
+  \definecolor{pLineColor}{RGB}{255,78,78}
+  \definecolor{pPointColor}{RGB}{255,78,78}
+  \draw[thick,color=pPointColor] (4,4) node[color=pPointColor,fill=pPointColor, circle, inner sep = 0pt, minimum size=2mm] {} -- (4.7,3.5) node[color=pPointColor,fill=pPointColor, circle, inner sep = 0pt, minimum size=2mm] {} -- (5.18,2.84) node[color=pPointColor,fill=pPointColor, circle, inner sep = 0pt, minimum size=2mm] {} -- (5.76,2.36) node[color=pPointColor,fill=pPointColor, circle, inner sep = 0pt, minimum size=2mm] {};
+  \definecolor{pLineColor}{RGB}{255,119,119}
+  \definecolor{pPointColor}{RGB}{255,119,119}
+  \draw[thick,color=pPointColor] (5.56,3.66) node[color=pPointColor,fill=pPointColor, circle, inner sep = 0pt, minimum size=2mm] {};
+\end{scope}
+\draw[->,>=triangle 45] (0.249,0.619) -- coordinate (x axis mid) (7.07483,0.619);
+\node[below=1cm,anchor=center] at (x axis mid) {Objective 1};
+\foreach \x in {1,2,3,4,5,6,7}
+  \draw (\x,0.619) -- (\x,0.619) node[anchor=north] {\x};
+\draw[->,>=triangle 45] (0.249,0.619) -- coordinate (y axis mid) (0.249,4.1369);
+\node[left=1cm,rotate=90,anchor=center] at (y axis mid) {Objective 2};
+\foreach \y in {0.8,1.2,1.6,2,2.4,2.8,3.2,3.6,4}
+  \draw (0.249,\y) -- (0.249,\y) node[anchor=east] {\y};
+\end{tikzpicture}
+\end{document}

@@ -1,6 +1,12 @@
 #ifndef FRONT_H
 #define FRONT_H
 
+/*!
+ * \file front.h
+ * \brief 2D line made of Point s, with graphical information
+ * \author Pierre-Loup Pissavy
+ */
+
 #include "Point.h"
 #include <vector>
 #include "qcustomplot.h"
@@ -8,6 +14,10 @@
 typedef Point<float> FPoint;
 typedef QCPScatterStyle::ScatterShape PointShape;
 typedef std::vector<FPoint *> PolyLine;
+
+/*!
+ * \brief Front with graphical details.
+ */
 
 class Front
 {
@@ -46,14 +56,14 @@ public:
     void compute_stats(double xmin, double xmax, double ymin, double ymax);
 
 private:
-    PolyLine    pts_;
-    QColor      lineColor_;
-    QColor      pointColor_;
-    PointShape  pointStyle_;
-    double      hypervolumen_;
-    double      mean_spacing_;
-    double      max_spacing_;
-    double      length_;
+    PolyLine    pts_;           //!< the point(s) that make(s) the front
+    QColor      lineColor_;     //!< the color used to print the line
+    QColor      pointColor_;    //!< the color used to print the points
+    PointShape  pointStyle_;    //!< the shape of the points
+    double      hypervolumen_;  //!< hypervolumen value
+    double      mean_spacing_;  //!< mean spacing value
+    double      max_spacing_;   //!< max spacing value
+    double      length_;        //!< length of the front
 };
 
 #endif // FRONT_H

@@ -1,6 +1,11 @@
 #ifndef DEBUG_STREAM_H
 #define DEBUG_STREAM_H
 
+/*!
+ * \file debug_stream.h
+ * \brief Console inside program
+ * \note Borrowed from C. Duhamel's work
+ */
 
 #include <iostream>
 #include <streambuf>

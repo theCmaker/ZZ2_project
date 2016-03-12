@@ -1,12 +1,17 @@
 #ifndef __SOLUTIONS_H__
 #define __SOLUTIONS_H__
 
+/*!
+ * \file Solutions.h
+ * \brief Set of solutions read from a file, has Pareto front processing abilities
+ * \author Pierre-Loup Pissavy
+ */
+
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <limits>
 #include <vector>
-#include <set>
 #include <map>
 #include "style.h"
 #include "front.h"
@@ -15,28 +20,29 @@ class QCPHover;
 
 typedef std::vector<FPoint> FPointv;
 typedef std::vector<FPoint *> FPointPtrv;
-typedef std::set<FPoint> FPoints;
-typedef std::set<FPoint *> FPointPtrS;
 typedef std::map<float,FPoint *> FPointPtrMap;
 typedef std::map<float,FPointPtrMap > FPointPtrMMap;
 typedef Front ParetoFront;
 typedef std::vector<ParetoFront> ParetoFrontv;
 
+/*!
+ * \brief Set of solutions and pareto frontiers on these solutions
+ */
 class Solutions
 {
   protected:
-    FPointv         pts_;
-    FPointPtrMMap   pts_map_;
-    unsigned        nb_pts_;
-    float           x_min_;
-    float           x_max_;
-    float           y_min_;
-    float           y_max_;
-    std::string     abscissa_;
-    std::string     ordinate_;
-    std::string     filename_;
-    ParetoFrontv    pFrontiers_;
-    Style           style_;
+    FPointv         pts_;           //!< Points read in data file
+    FPointPtrMMap   pts_map_;       //!< Points in a sorted fashion
+    unsigned        nb_pts_;        //!< Number of points
+    float           x_min_;         //!< Lowest x coordinate
+    float           x_max_;         //!< Highest x coordinate
+    float           y_min_;         //!< Lowest y coordinate
+    float           y_max_;         //!< Highest y coordinate
+    std::string     abscissa_;      //!< Name of the x axis
+    std::string     ordinate_;      //!< Name of the y axis
+    std::string     filename_;      //!< File used to get the data
+    ParetoFrontv    pFrontiers_;    //!< Pareto frontiers
+    Style           style_;         //!< Style of the graph
 
   public:
     Solutions();

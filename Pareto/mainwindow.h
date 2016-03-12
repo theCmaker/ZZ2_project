@@ -1,6 +1,12 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+/*!
+ * \file mainwindow.h
+ * \brief Main window of ParetoFrontViewer
+ * \author Pierre-Loup Pissavy
+ */
+
 #include <QMainWindow>
 #include <QFileDialog>
 #include <iostream>
@@ -12,21 +18,23 @@ namespace Ui {
 class MainWindow;
 }
 
+/*!
+ * \brief Application main window
+ */
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-    Solutions *s;
 
 protected:
-    void load_file(QString);
-    void compute_style();
-    void setPointStyle(QCPScatterStyle::ScatterShape shape);
-    void show_stats();
-    void hide_stats();
+    Solutions *s;               //!< Solutions set
+    void load_file(QString);    //!< Load a file into the solutions set
+    void compute_style();       //!< Compute the style of the solutions set for TikZ output
+    void show_stats();          //!< Show left panel content
+    void hide_stats();          //!< Hide left panel content
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
-    QTextEdit *Sortie_application();
+    explicit MainWindow(QWidget *parent = 0); //!< Constructor
+    QTextEdit *Sortie_application();          //!< Console panel
     ~MainWindow();
 
 private slots:
@@ -66,6 +74,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     std::string     file_path_;
+    void setPointStyle(QCPScatterStyle::ScatterShape shape);
 };
 
 #endif // MAINWINDOW_H
