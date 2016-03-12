@@ -34,16 +34,16 @@ public:
     double hypervolumen() const;
     void setHypervolumen(double hypervolumen);
 
-    double max_distance() const;
-    void setMax_distance(double max_distance);
+    double max_spacing() const;
+    void setMax_spacing(double max_spacing);
 
-    double sum_distance() const;
-    void setSum_distance(double sum_distance);
+    double length() const;
+    void setLength(double length);
 
-    double mean_distance() const;
-    void setMean_distance(double mean_distance);
+    double mean_spacing() const;
+    void setMean_spacing(double mean_spacing);
 
-    void compute_distances();
+    void compute_stats(double xmin, double xmax, double ymin, double ymax);
 
 private:
     PolyLine    pts_;
@@ -51,9 +51,9 @@ private:
     QColor      pointColor_;
     PointShape  pointStyle_;
     double      hypervolumen_;
-    double      mean_distance_;
-    double      max_distance_;
-    double      sum_distance_;
+    double      mean_spacing_;
+    double      max_spacing_;
+    double      length_;
 };
 
 #endif // FRONT_H

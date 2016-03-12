@@ -84,8 +84,7 @@ void QCPHover::paintInfo() {
                 j++;
             }
             if (j == 10 && i != pts_in_area.end()) {
-                pop_up += '\n';
-                pop_up += "...";
+                pop_up += "\n ...";
             }
             QRectF rect(cursor_pos_,QSize(350,250));
             QRectF brect = painter.boundingRect(rect,Qt::TextWordWrap,QString(pop_up.c_str()));

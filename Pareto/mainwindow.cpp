@@ -8,7 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     s(nullptr),
     ui(new Ui::MainWindow),
-    file_path_(".")
+    file_path_(QDir::homePath().toStdString())
 {
     ui->setupUi(this);
 
@@ -23,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->actionClose->setDisabled(true);
     ui->actionSave_as->setDisabled(true);
-    ui->actionGNUPlot->setDisabled(true);
+    ui->actionReload_file->setDisabled(true);
     ui->actionJPG_Image->setDisabled(true);
     ui->actionPNG_Image->setDisabled(true);
     ui->actionPDF_File->setDisabled(true);
@@ -56,14 +56,13 @@ void MainWindow::on_actionOpen_triggered() {
 
     if(!f_nom.isEmpty())
     {
-        //std::cout << f_nom.toStdString() << std::endl;
         unsigned index = f_nom.toStdString().find_last_of('/');
         file_path_ = f_nom.toStdString().substr(0,index);
 
         ui->actionOpen->setDisabled(true);
         ui->actionClose->setDisabled(false);
         ui->actionSave_as->setDisabled(false);
-        //ui->actionGNUPlot->setDisabled(false);
+        ui->actionReload_file->setDisabled(false);
         ui->actionJPG_Image->setDisabled(false);
         ui->actionPNG_Image->setDisabled(false);
         ui->actionPDF_File->setDisabled(false);
@@ -94,7 +93,7 @@ void MainWindow::on_actionClose_triggered() {
         //Actions
         ui->actionClose->setDisabled(true);
         ui->actionSave_as->setDisabled(true);
-        ui->actionGNUPlot->setDisabled(true);
+        ui->actionReload_file->setDisabled(true);
         ui->actionJPG_Image->setDisabled(true);
         ui->actionPNG_Image->setDisabled(true);
         ui->actionPDF_File->setDisabled(true);
@@ -105,6 +104,28 @@ void MainWindow::on_actionClose_triggered() {
         ui->actionLabels->setDisabled(true);
         ui->actionGrid->setDisabled(true);
     }
+}
+
+void MainWindow::on_actionReload_file_triggered() {
+    QString fname = QString(s->getFilename().c_str());
+    on_actionClose_triggered();
+    ui->actionOpen->setDisabled(true);
+    ui->actionClose->setDisabled(false);
+    ui->actionSave_as->setDisabled(false);
+    ui->actionReload_file->setDisabled(false);
+    ui->actionJPG_Image->setDisabled(false);
+    ui->actionPNG_Image->setDisabled(false);
+    ui->actionPDF_File->setDisabled(false);
+    ui->actionTikZ_for_LaTeX->setDisabled(false);
+
+    ui->actionGrid->setDisabled(false);
+    ui->actionAxes->setDisabled(false);
+    ui->actionLabels->setDisabled(false);
+
+    ui->actionGrid->setChecked(true);
+    ui->actionAxes->setChecked(true);
+    ui->actionLabels->setChecked(true);
+    load_file(fname);
 }
 
 void MainWindow::on_actionSave_as_triggered() {
@@ -132,28 +153,27 @@ void MainWindow::on_actionPNG_Image_triggered() {
     if (!f_nom.isEmpty()) {
         unsigned index = f_nom.toStdString().find_last_of('/');
         file_path_ = f_nom.toStdString().substr(0,index);
-        ui->Graphique->savePng(f_nom,400,400,5);
+        ui->Graphique->savePng(f_nom,1000,1000*(double)ui->Graphique->height()/(double)ui->Graphique->width(),2,100);
     }
 }
 
 void MainWindow::on_actionJPG_Image_triggered() {
-    QString f_nom = QFileDialog::getSaveFileName(this,tr("Export to JPG Image"),tr(file_path_.c_str()),tr("JPG Files (*.jpg,*.jpeg)"));
+    QString f_nom = QFileDialog::getSaveFileName(this,tr("Export to JPG Image"),tr(file_path_.c_str()),tr("JPG Files (*.jpg *.jpeg)"));
     if (!f_nom.isEmpty()) {
         unsigned index = f_nom.toStdString().find_last_of('/');
         file_path_ = f_nom.toStdString().substr(0,index);
-        ui->Graphique->saveJpg(f_nom,400,400,5);
+        ui->Graphique->saveJpg(f_nom,1000,1000*(double)ui->Graphique->height()/(double)ui->Graphique->width(),2,100);
     }
 }
 
 void MainWindow::on_actionPDF_File_triggered() {
-    QString f_nom = QFileDialog::getSaveFileName(this,tr("Export to PDF File"),tr(file_path_.c_str()),tr("PDF Files (*.pdf,*.xpdf)"));
+    QString f_nom = QFileDialog::getSaveFileName(this,tr("Export to PDF File"),tr(file_path_.c_str()),tr("PDF Files (*.pdf *.xpdf)"));
     if (!f_nom.isEmpty()) {
         unsigned index = f_nom.toStdString().find_last_of('/');
         file_path_ = f_nom.toStdString().substr(0,index);
         ui->Graphique->savePdf(f_nom);
     }
 }
-
 
 void MainWindow::on_actionAxes_changed()
 {
@@ -201,47 +221,93 @@ void MainWindow::on_actionLabels_changed()
         ui->Graphique->yAxis->setLabel(s->getOrdinate().c_str());
     }
     ui->Graphique->replot();
-    //std::cout << "Labels are now " << (active?"enabled":"disabled") << std::endl;
+}
+
+void MainWindow::on_actionLicense_triggered()
+{
+    QMessageBox * MB = new QMessageBox(QMessageBox::NoIcon,
+                                       QString("License"),
+                                       QString("This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.\n\nIt uses QCustomPlot which is developped under GNU General Public License.\n\nThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details."),
+                                       QMessageBox::Close,
+                                       this);
+
+    MB->setAttribute(Qt::WA_DeleteOnClose, true);
+    MB->show();
+}
+
+void MainWindow::on_actionCredits_triggered()
+{
+    QMessageBox * MB = new QMessageBox(QMessageBox::Information,
+                                       QString("Credits"),
+                                       QString("This program has been developped by Pierre-Loup Pissavy, student at ISIMA Computer Science Engineering School in Aubière near Clermont-Ferrand (France).\nThis program makes part of a project during the second year of studies at ISIMA.\n\nThe graphs are displayed with a module named QCustomPlot (under GPL) and developped by Emanuel Heichhammer."),
+                                       QMessageBox::Close,
+                                       this);
+
+    MB->setAttribute(Qt::WA_DeleteOnClose, true);
+    MB->show();
+}
+
+void MainWindow::on_actionHowToUse_triggered()
+{
+    QMessageBox * MB = new QMessageBox(QMessageBox::NoIcon,
+                                       QString("How to use this program?"),
+                                       QString("To display the graphs and compute the Pareto fronts, the program needs an input file. This input file is plain text and must respect a certain syntax.\n\n1) The number of points: tagged by \"NB POINTS\" on the line just before the value, which must be integer.\n\n2) The name of the axes: respectively tagged by \"FIRST OBJECTIVE\" and \"SECOND OBJECTIVE\" on the line just before the value. Only one tag per line and one value per line can be provided.\n\n3) The points or solutions, tagged by \"SOLUTIONS\". The tag is followed by as many lines as said for NB POINTS, each line mentionning the first objective value and a spacing character, the second objective value and a spacing character, and an optional description till the end of the line.\n\nAll these tags can be provided in any order, except for NB POINTS which needs to be provided before SOLUTIONS."),
+                                       QMessageBox::Ok,
+                                       this);
+
+    MB->setAttribute(Qt::WA_DeleteOnClose, true);
+    MB->show();
 }
 
 void MainWindow::load_file(QString f_nom) {
     s = new Solutions(f_nom.toStdString().c_str());
-    s->compute_frontiers();
-    ui->Graphique->setSolution(s);
+    if (s->getNbPts() == 0) {
+        on_actionClose_triggered();
+        QMessageBox * MB = new QMessageBox(QMessageBox::Warning,
+                                           QString("File Reading Error"),
+                                           QString("Unfortunately the file could not be read. Do you have the right to read it? Is it empty? For the syntax, just check in the About Menu."),
+                                           QMessageBox::Ok,
+                                           this);
 
-    // Pareto Frontier
-    QColor f_color = Qt::darkRed;
-    ParetoFrontv & pareto = s->getPFrontiers();
-    int factor;
+        MB->setAttribute(Qt::WA_DeleteOnClose, true);
+        MB->show();
+    } else {
+        s->compute_frontiers();
+        ui->Graphique->setSolution(s);
 
-    QVector<QVector<double> >   pareto_x(pareto.size()),
-                                pareto_y(pareto.size());
+        // Pareto Frontier
+        QColor f_color = Qt::darkRed;
+        ParetoFrontv & pareto = s->getPFrontiers();
+        int factor;
 
-    for (unsigned i = 0; i < pareto.size(); ++i) {
-        for (PolyLine::iterator pitr = pareto[i].begin(); pitr != pareto[i].end(); ++pitr) {
-            pareto_x[i].append((*pitr)->getX());
-            pareto_y[i].append((*pitr)->getY());
+        QVector<QVector<double> >   pareto_x(pareto.size()),
+                                    pareto_y(pareto.size());
+
+        for (unsigned i = 0; i < pareto.size(); ++i) {
+            for (PolyLine::iterator pitr = pareto[i].begin(); pitr != pareto[i].end(); ++pitr) {
+                pareto_x[i].append((*pitr)->getX());
+                pareto_y[i].append((*pitr)->getY());
+            }
         }
+
+        for (unsigned i = 0; i < pareto.size(); ++i) {
+            factor = (225 * i)/pareto.size() + 100;
+            ui->Graphique->addGraph();
+            ui->Graphique->graph(i)->setData(pareto_x[i],pareto_y[i]);
+            ui->Graphique->graph(i)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssDisc, f_color.lighter(factor),f_color.lighter(factor), 10));
+            ui->Graphique->graph(i)->setLineStyle(QCPGraph::lsLine);
+            ui->Graphique->graph(i)->setPen(QPen(f_color.lighter(factor)));
+
+            pareto[i].compute_stats(s->getMinX(),s->getMaxX(),s->getMinY(),s->getMaxY());
+        }
+
+        // set axes
+        ui->Graphique->xAxis->setLabel(s->getAbscissa().c_str());
+        ui->Graphique->yAxis->setLabel(s->getOrdinate().c_str());
+        ui->Graphique->xAxis->setRange(s->getMinX()-.05*(s->getMaxX()-s->getMinX()), s->getMaxX()+.05*(s->getMaxX()-s->getMinX()));
+        ui->Graphique->yAxis->setRange(s->getMinY()-.05*(s->getMaxY()-s->getMinY()), s->getMaxY()+.05*(s->getMaxY()-s->getMinY()));
+        ui->Graphique->replot();
     }
-
-    for (unsigned i = 0; i < pareto.size(); ++i) {
-        factor = (225 * i)/pareto.size() + 100;
-        ui->Graphique->addGraph();
-        ui->Graphique->graph(i)->setData(pareto_x[i],pareto_y[i]);
-        ui->Graphique->graph(i)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssDisc, f_color.lighter(factor),f_color.lighter(factor), 10));
-        ui->Graphique->graph(i)->setLineStyle(QCPGraph::lsLine);
-        ui->Graphique->graph(i)->setPen(QPen(f_color.lighter(factor)));
-
-        s->compute_hypervolumen(pareto[i]);
-        pareto[i].compute_distances();
-    }
-
-    // set axes
-    ui->Graphique->xAxis->setLabel(s->getAbscissa().c_str());
-    ui->Graphique->yAxis->setLabel(s->getOrdinate().c_str());
-    ui->Graphique->xAxis->setRange(s->getMinX()-.05*(s->getMaxX()-s->getMinX()), s->getMaxX()+.05*(s->getMaxX()-s->getMinX()));
-    ui->Graphique->yAxis->setRange(s->getMinY()-.05*(s->getMaxY()-s->getMinY()), s->getMaxY()+.05*(s->getMaxY()-s->getMinY()));
-    ui->Graphique->replot();
 }
 
 void MainWindow::compute_style() {
@@ -329,9 +395,9 @@ void MainWindow::update_visualization_panel() {
         front_value << index;
         hypervolumen_value << frontiers[index].hypervolumen();
         nbpoints_value << frontiers[index].pts().size();
-        meandistance_value << frontiers[index].mean_distance();
-        maxdistance_value << frontiers[index].max_distance();
-        sumdistance_value << frontiers[index].sum_distance();
+        meandistance_value << frontiers[index].mean_spacing();
+        maxdistance_value << frontiers[index].max_spacing();
+        sumdistance_value << frontiers[index].length();
 
         ui->ValueFront->setText(QString(front_value.str().c_str()));
         ui->ValueHypervolumen->setText(QString(hypervolumen_value.str().c_str()));

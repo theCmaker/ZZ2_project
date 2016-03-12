@@ -34,14 +34,21 @@ private slots:
     void on_actionOpen_triggered();
     void on_actionClose_triggered();
     void on_actionSave_as_triggered();
+    void on_actionReload_file_triggered();
     void on_actionTikZ_for_LaTeX_triggered();
     void on_actionPNG_Image_triggered();
     void on_actionJPG_Image_triggered();
     void on_actionPDF_File_triggered();
+
     // View menu
     void on_actionGrid_changed();
     void on_actionAxes_changed();
     void on_actionLabels_changed();
+
+    //About menu
+    void on_actionLicense_triggered();
+    void on_actionHowToUse_triggered();
+    void on_actionCredits_triggered();
 
     // Context menu
     void contextMenuRequest(QPoint pos);

@@ -3,8 +3,7 @@
 /*!
  * \brief Default solution constructor
  */
-Solutions::Solutions() : nb_pts_(0) {
-}
+Solutions::Solutions() : nb_pts_(0) {}
 
 /*!
  * \brief Solution constructor from a given file
@@ -16,7 +15,8 @@ Solutions::Solutions(const char *name) :
     x_max_(std::numeric_limits<float>::min()),
     y_min_(std::numeric_limits<float>::max()),
     y_max_(std::numeric_limits<float>::min()),
-    filename_(name) {
+    filename_(name)
+{
     double x, y;
     std::string buf;
 	std::ifstream ifs (name,std::ifstream::in);
@@ -34,8 +34,9 @@ Solutions::Solutions(const char *name) :
                 } else if (buf == "SECOND OBJECTIVE") {
                     std::getline(ifs,ordinate_);
                 } else if (buf == "SOLUTIONS") {
-                    for (unsigned i = 0; i < nb_pts_; ++i) {
-                        ifs >> x >> y;
+                    unsigned i = 0;
+                    while (i < nb_pts_ && ifs >> x >> y && std::getline(ifs,buf)) {
+                        ++i;
                         if (x_min_ > x) {
                             x_min_ = x;
                         } else if (x_max_ < x) {
@@ -46,23 +47,29 @@ Solutions::Solutions(const char *name) :
                         } else if (y_max_ < y) {
                             y_max_ = y;
                         }
-                        std::getline(ifs,buf);
                         pts_.push_back(FPoint(i,x,y,buf.substr(0,buf.find('#'))));
+                    }
+                    if (i < nb_pts_) {
+                        std::cout << "NB POINTS set to " << nb_pts_ << ", but only " << i << " provided. Keeping " << i << " as NB POINTS." << std::endl;
+                        nb_pts_ = i;
+                    } else {
+                        std::cout << "Loaded " << nb_pts_ << " points." << std::endl;
                     }
                 }
             }
         }
+        ifs.close();
     }
 }
 
-Solutions::~Solutions() {
-}
+Solutions::~Solutions() {}
 
 /*!
  * \brief Highest (and worst) value on first objective
  * \return worst value for the first objective
  */
-const float & Solutions::getMaxX() const {
+const float & Solutions::getMaxX() const
+{
     return x_max_;
 }
 
@@ -70,7 +77,8 @@ const float & Solutions::getMaxX() const {
  * \brief Highest (and worst) value on second objective
  * \return worst value for the second objective
  */
-const float & Solutions::getMaxY() const {
+const float & Solutions::getMaxY() const
+{
     return y_max_;
 }
 
@@ -78,7 +86,8 @@ const float & Solutions::getMaxY() const {
  * \brief Lowest (and best) value on first objective
  * \return best value for the first objective
  */
-const float & Solutions::getMinX() const {
+const float & Solutions::getMinX() const
+{
     return x_min_;
 }
 
@@ -86,7 +95,8 @@ const float & Solutions::getMinX() const {
  * \brief Lowest (and best) value on second objective
  * \return best value for the second objective
  */
-const float & Solutions::getMinY() const {
+const float & Solutions::getMinY() const
+{
     return y_min_;
 }
 
@@ -94,7 +104,8 @@ const float & Solutions::getMinY() const {
  * \brief All the solutions read from the file
  * \return vector containing all the points
  */
-const FPointv & Solutions::getPts() const {
+const FPointv & Solutions::getPts() const
+{
     return pts_;
 }
 
@@ -103,7 +114,8 @@ const FPointv & Solutions::getPts() const {
  * \return a sorted map indexed on first objective values containing sorted maps of pointers to the solutions, indexed on second objective values.
  * \warning compute_frontiers() must have been called at least one time before calling this method
  */
-const FPointPtrMMap & Solutions::getPtsMap() const {
+const FPointPtrMMap & Solutions::getPtsMap() const
+{
     return pts_map_;
 }
 
@@ -111,7 +123,8 @@ const FPointPtrMMap & Solutions::getPtsMap() const {
  * \brief Name of the first objective
  * \return abscissa label
  */
-const std::string & Solutions::getAbscissa() const {
+const std::string & Solutions::getAbscissa() const
+{
     return abscissa_;
 }
 
@@ -119,7 +132,8 @@ const std::string & Solutions::getAbscissa() const {
  * \brief Name of the second objective
  * \return ordinate label
  */
-const std::string & Solutions::getOrdinate() const {
+const std::string & Solutions::getOrdinate() const
+{
     return ordinate_;
 }
 
@@ -127,7 +141,8 @@ const std::string & Solutions::getOrdinate() const {
  * \brief Name and path of the original file
  * \return name and path of the original file
  */
-const std::string & Solutions::getFilename() const {
+const std::string & Solutions::getFilename() const
+{
     return filename_;
 }
 
@@ -135,7 +150,7 @@ const std::string & Solutions::getFilename() const {
  * \brief Number of solutions stored in pts_
  * \return number of solutions
  */
-int Solutions::getNbPts() const
+const unsigned & Solutions::getNbPts() const
 {
     return nb_pts_;
 }
@@ -145,7 +160,8 @@ int Solutions::getNbPts() const
  * \return all the computed frontiers
  * \see compute_frontiers
  */
-ParetoFrontv & Solutions::getPFrontiers() {
+ParetoFrontv & Solutions::getPFrontiers()
+{
     return pFrontiers_;
 }
 
@@ -368,35 +384,6 @@ void Solutions::exportToTikZ(const char *name) {
     output << "\\end{document}" << std::endl;
 
     output.close();
-}
-
-/*!
- * \brief Compute the hypervolumen of the given \a f front.
- * \param f front
- * \note The hv is also stored into the front.
- * \return the computed hypervolumen
- */
-float Solutions::compute_hypervolumen(ParetoFront &f) {
-    float delta_x = x_max_ - x_min_;
-    float delta_y = y_max_ - y_min_;
-    float hv = delta_x * delta_y;
-    PolyLine::iterator i = f.begin();
-
-    // Compute until penultimate point
-    while (i != f.end()-1) {
-        // Remove rectangle above current point till next point
-        hv -= ((*(i+1))->getX() - (*i)->getX()) * (y_max_ - (*i)->getY());
-        ++i;
-    }
-
-    // Last point -> rectangle computed with x_max_ as right side abscissa
-    // (projection on line x = x_max_)
-    hv -= (x_max_ - (*i)->getX()) * (y_max_ - (*i)->getY());
-
-    //Normalize
-    hv = hv / (delta_x * delta_y);
-    f.setHypervolumen(hv);
-    return hv;
 }
 
 /*!

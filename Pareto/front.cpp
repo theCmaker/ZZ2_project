@@ -69,52 +69,79 @@ void Front::setHypervolumen(double hypervolumen)
     hypervolumen_ = hypervolumen;
 }
 
-double Front::max_distance() const
+double Front::max_spacing() const
 {
-    return max_distance_;
+    return max_spacing_;
 }
 
-void Front::setMax_distance(double max_distance)
+void Front::setMax_spacing(double max_spacing)
 {
-    max_distance_ = max_distance;
+    max_spacing_ = max_spacing;
 }
 
-double Front::sum_distance() const
+double Front::length() const
 {
-    return sum_distance_;
+    return length_;
 }
 
-void Front::setSum_distance(double sum_distance)
+void Front::setLength(double length)
 {
-    sum_distance_ = sum_distance;
+    length_ = length;
 }
 
-double Front::mean_distance() const
+double Front::mean_spacing() const
 {
-    return mean_distance_;
+    return mean_spacing_;
 }
 
-void Front::setMean_distance(double mean_distance)
+void Front::setMean_spacing(double mean_spacing)
 {
-    mean_distance_ = mean_distance;
+    mean_spacing_ = mean_spacing;
 }
 
-void Front::compute_distances()
+void Front::compute_stats(double xmin, double xmax, double ymin, double ymax)
 {
-    double dist;
-    max_distance_ = 0.;
-    sum_distance_ = 0.;
-    mean_distance_ = 0.;
+    max_spacing_ = 0.;
+    length_ = 0.;
+    mean_spacing_ = 0.;
+    double delta_x = xmax - xmin;
+    double delta_y = ymax - ymin;
+    double dist_x;
+    double dist_y;
+    double sum_dist_x = 0.;
+    double sum_dist_y = 0.;
     if (pts_.size() > 1) {
         for (PolyLine::iterator itr = pts_.begin(); itr != pts_.end() - 1; ++itr) {
-            dist = (*(itr+1))->getX() - (*itr)->getX() + (*itr)->getY() - (*(itr+1))->getY();
-            sum_distance_ += dist;
-            if (dist > max_distance_) {
-                max_distance_ = dist;
+            dist_x = (*(itr+1))->getX() - (*itr)->getX();
+            dist_y = (*itr)->getY() - (*(itr+1))->getY();
+            sum_dist_x += dist_x;
+            sum_dist_y += dist_y;
+            if (dist_x/delta_x + dist_y/delta_y > max_spacing_) {
+                max_spacing_ = dist_x/delta_x + dist_y/delta_y;
             }
         }
-        mean_distance_ = sum_distance_ / (double) (pts_.size() - 1);
+        length_ = sum_dist_x / delta_x + sum_dist_y / delta_y;
+        mean_spacing_ = length_ / (double) (pts_.size() - 1);
+
+        //Hypervolumen
+        hypervolumen_ = delta_x * delta_y;
+        PolyLine::iterator i = pts_.begin();
+
+        // Compute until penultimate point
+        while (i != pts_.end()-1) {
+            // Remove rectangle above current point till next point
+            hypervolumen_ -= ((*(i+1))->getX() - (*i)->getX()) * (ymax - (*i)->getY());
+            ++i;
+        }
+
+        // Last point -> rectangle computed with x_max_ as right side abscissa
+        // (projection on line x = x_max_)
+        hypervolumen_ -= (xmax - (*i)->getX()) * (ymax - (*i)->getY());
+
+        //Normalize
+        hypervolumen_ = hypervolumen_ / (delta_x * delta_y);
     }
+
 }
 
 

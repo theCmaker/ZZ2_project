@@ -109,19 +109,19 @@ void Point<T>::setInfo(std::string & info) {
 
 //interrogators
 template <typename T>
-bool Point<T>::isIn (Point<T> & top_left, Point<T> & bottom_right) const {
-    return (this->x_ >= top_left.x_) && (this->x_ <= bottom_right.x_) && (this->y_ <= top_left.y_) && (this->y_ >= bottom_right.y_);
+inline bool Point<T>::isIn (Point<T> & top_left, Point<T> & bottom_right) const {
+    return ((this->x_ >= top_left.x_) && (this->x_ <= bottom_right.x_) && (this->y_ <= top_left.y_) && (this->y_ >= bottom_right.y_));
 }
 
 //comparators
 template <typename T>
-bool Point<T>::dominates (Point<T> &p) {
+inline bool Point<T>::dominates (Point<T> &p) {
     return (this->x_ > p.x_ && this->y_ < p.y_);
 }
 
 template <typename T>
-bool Point<T>::operator< (const Point<T> &p) const {
-    return this->x_ < p.x_ && this->y_ >= p.y_;
+inline bool Point<T>::operator< (const Point<T> &p) const {
+    return (this->x_ < p.x_ && this->y_ >= p.y_);
 }
 
 //transformers

@@ -50,14 +50,13 @@ class Solutions
     const std::string & getAbscissa() const;
     const std::string & getOrdinate() const;
     const std::string & getFilename() const;
-          int              getNbPts            ()                      const;
+    const unsigned      &  getNbPts            ()                      const;
     const FPointv       &  getPts              ()                      const;
     const FPointPtrMMap &  getPtsMap           ()                      const;
           ParetoFrontv  &  getPFrontiers       ();
           Style         &  getStyle            ();
           FPointPtrv       findPointsInArea    (FPoint &, FPoint &)    const;
           void             compute_frontiers   ();
-          float            compute_hypervolumen(ParetoFront &);
           void             compute_front_style (QCPHover *);
           void             saveToFile          (const char *)          const;
           void             exportToTikZ        (const char *);
