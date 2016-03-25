@@ -28,6 +28,7 @@ Doxyfile*
 /build-*
 /documents
 /report
+/slide
 
 
 # QtCreator
