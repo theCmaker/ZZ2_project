@@ -175,6 +175,17 @@ Style &Solutions::getStyle()
 }
 
 /*!
+ * \brief Set the points set
+ * \warning if fronts had been computed before, then it needs to be run again
+ * \note nbPts is updated
+ */
+void Solutions::setPts(FPointv &v)
+{
+    pts_ = v;
+    nb_pts_ = v.size();
+}
+
+/*!
  * \brief Builds a list of all the points into the rectangle defined by \a top_left and \a bottom_right.
  * \param top_left     Coordinates of the top left hand corner of the rectangle.
  * \param bottom_right Coordinates of the bottom right hand corner of the rectangle.

@@ -61,6 +61,7 @@ class Solutions
     const FPointPtrMMap &  getPtsMap           ()                      const;
           ParetoFrontv  &  getPFrontiers       ();
           Style         &  getStyle            ();
+          void             setPts              (FPointv &);
           FPointPtrv       findPointsInArea    (FPoint &, FPoint &)    const;
           void             compute_frontiers   ();
           void             compute_front_style (QCPHover *);
